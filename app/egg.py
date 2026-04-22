@@ -840,16 +840,25 @@ elif menu == "Kesehatan":
             except:
                 st.error("AI tidak tersedia")
 
-        @st.cache_resource
-        def load_model_dl():
-            model = load_model("../model/eggrow_vision_model.h5")
-            classes = np.load("../model/labels.npy")
-            return model, classes
-    
-        model_dl, class_names = load_model_dl()
+       @st.cache_resource
+        def load_data_dl():
+            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         
-        model_dl.save("model_fix.keras")
-        st.write("TF VERSION:", tf.__version__)            
+            model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
+            class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
+        
+            # DEBUG (biar tahu errornya dimana kalau gagal)
+            st.write("📂 MODEL PATH:", model_path)
+            st.write("📂 EXISTS:", os.path.exists(model_path))
+            st.write("📂 FILES:", os.listdir(os.path.join(BASE_DIR, "..", "model")))
+        
+            model = tf.keras.models.load_model(model_path, compile=False)
+            classes = np.load(class_path)
+        
+            return model, classes
+        
+        
+        model_dl, class_dl = load_data_dl()          
         # =========================
         # UI
         # =========================
