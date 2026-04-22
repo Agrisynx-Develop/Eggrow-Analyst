@@ -18,8 +18,6 @@ from sklearn.metrics import accuracy_score, classification_report, mean_squared_
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import LabelEncoder
 
-from ydata_profiling import ProfileReport
-
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT
@@ -134,21 +132,12 @@ if menu == "Dashboard":
     with st.expander("View Data"):
         st.dataframe(df)
    
-    tab1, tab2 = st.tabs([
-    "Data Overview",
+    tab1 = st.tabs([
     "Produktivitas"
     ])
-
+    
     # -------------------- TAB 1 --------------------
     with tab1:
-        if stateful_button("Generate Profile Report", key="profile"):
-            if len(df) < 5000:
-                profile = ProfileReport(df, title="Data Profile")
-                st.components.v1.html(profile.to_html(), height=800, scrolling=True)
-            else:
-                st.warning("Dataset too large for profiling")
-    # -------------------- TAB 2 --------------------
-    with tab2:
         st.header("Filter Data Berdasarkan Tanggal")
 
         # Pastikan kolom tanggal ada
