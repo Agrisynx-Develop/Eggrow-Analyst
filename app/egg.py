@@ -848,16 +848,16 @@ elif menu == "Kesehatan":
         @st.cache_resource
         def load_model_dl():
             BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-            
+        
             model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
             class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
         
-            model = load_model(model_path, compile=False)
+            model = load_model(model_path, compile=False, custom_objects={})
             classes = np.load(class_path)
         
             return model, classes
+        
         model_dl, class_names = load_model_dl()
-
         # =========================
         # UI
         # =========================
