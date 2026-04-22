@@ -844,19 +844,7 @@ elif menu == "Kesehatan":
         import os
         import streamlit as st
         
-        @st.cache_resource
-        def load_data_dl():
-            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-            model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
-            class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
-            
-            model = load_model(model_path, compile=False) 
-            classes = np.load(class_path)
-            
-            return model, classes
-                
-        model_dl, class_dl  = load_data_dl()
+        
     
         # =========================
         # UI
@@ -865,7 +853,19 @@ elif menu == "Kesehatan":
             st.header("📷 Eggrow Vision (Deep Learning)")
     
             uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
+            def load_data_dl():
+                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
+                model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
+                class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
+                
+                model = load_model(model_path, compile=False) 
+                classes = np.load(class_path)
+                
+                return model, classes
+                    
+            model_dl, class_dl  = load_data_dl()
+        
             if uploaded_img:
                 file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
                 img = cv2.imdecode(file_bytes, 1)
