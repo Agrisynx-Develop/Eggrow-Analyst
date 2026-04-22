@@ -855,11 +855,11 @@ elif menu == "Kesehatan":
         # =========================
         # UI
         # =========================
+        model_dl, class_names = load_model_dl()
         with tab2:
             st.header("📷 Eggrow Vision (Deep Learning)")
         
             uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
-            model_dl, class_names = load_model_dl()
             if uploaded_img:
                 file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
                 img = cv2.imdecode(file_bytes, 1)
