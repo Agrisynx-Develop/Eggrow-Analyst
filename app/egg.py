@@ -1,4 +1,7 @@
 import streamlit as st
+st.set_page_config(page_title="EggRow AI System", layout="wide")
+st.title("🐔 EggRow - Smart Poultry Decision Support System")
+
 import pandas as pd
 import numpy as np
 import os
@@ -36,8 +39,7 @@ from scipy.optimize import linprog
 # =====================================================
 # CONFIGURATION
 # =====================================================
-st.set_page_config(page_title="EggRow AI System", layout="wide")
-st.title("🐔 EggRow - Smart Poultry Decision Support System")
+
 
 os.makedirs("database", exist_ok=True)
 db_path = "database/produktivitias_db.csv"
@@ -65,8 +67,6 @@ def format_rupiah(value):
 def clean_numeric(x):
     x = re.sub(r"[^\d.]", "", str(x))
     return pd.to_numeric(x, errors="coerce")
-
-st.set_page_config(layout="wide")
 
 # -------------------- STATEFUL BUTTON --------------------
 def stateful_button(*args, key=None, **kwargs):
