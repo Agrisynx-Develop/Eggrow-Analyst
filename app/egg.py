@@ -854,7 +854,7 @@ elif menu == "Kesehatan":
 # =========================
 # LOAD SEKALI (GLOBAL)
 # =========================
-model_dl, class_names = load_model_dl()
+        model_dl, class_names = load_model_dl()
         
 
 
