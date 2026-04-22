@@ -845,15 +845,7 @@ elif menu == "Kesehatan":
         import streamlit as st
         
         
-    
-        # =========================
-        # UI
-        # =========================
-        with tab2:
-            st.header("📷 Eggrow Vision (Deep Learning)")
-    
-            uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
-            def load_data_dl():
+        def load_data_dl():
                 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
                 model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
@@ -864,7 +856,15 @@ elif menu == "Kesehatan":
                 
                 return model, classes
                     
-            model_dl, class_dl  = load_data_dl()
+        model_dl, class_dl  = load_data_dl()
+        # =========================
+        # UI
+        # =========================
+        with tab2:
+            st.header("📷 Eggrow Vision (Deep Learning)")
+    
+            uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
+            
         
             if uploaded_img:
                 file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
