@@ -856,38 +856,36 @@ elif menu == "Kesehatan":
             classes = np.load(class_path)
         
             return model, classes
-        
+        model_dl, class_names = load_model_dl()
+
+
         # =========================
         # UI
         # =========================
         with tab2:
             st.header("📷 Eggrow Vision (Deep Learning)")
-    
+        
             uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
-            
+        
             if uploaded_img:
                 file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
                 img = cv2.imdecode(file_bytes, 1)
-    
+        
                 img_resized = cv2.resize(img, (128, 128))
                 img_norm = img_resized / 255.0
                 img_input = np.expand_dims(img_norm, axis=0)
-    
+        
                 st.image(img_resized, channels="BGR")
-    
+        
                 if st.button("🔍 Analisis AI Vision"):
-    
-                    pred = model.predict(img_input)
+                    pred = model_dl.predict(img_input)
+        
                     idx = np.argmax(pred)
                     confidence = float(np.max(pred))
-    
-                    penyakit = class_names[idx]
-    
-                    st.success(f"""
-                    🐔 Prediksi:
-                    **{penyakit}**
-                    Confidence: {confidence*100:.2f}%
-                    """)
+        
+                    st.success(f"🐔 Prediksi: {class_names[idx]}")
+                    st.write(f"Confidence: {confidence:.2%}")
+
 
     # =========================
     # TAB 3 → COMBINE
