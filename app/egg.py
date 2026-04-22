@@ -869,7 +869,7 @@ elif menu == "Kesehatan":
                 st.image(img_resized, channels="BGR")
         
                 if st.button("🔍 Analisis AI Vision"):
-                    pred = model.predict(img_input)
+                    pred = model_dl.predict(img_input)
         
                     idx = np.argmax(pred)
                     confidence = float(np.max(pred))
