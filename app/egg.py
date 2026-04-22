@@ -840,13 +840,22 @@ elif menu == "Kesehatan":
                 st.error("AI tidak tersedia")
                 
 
+        import os
+        import numpy as np
+        import streamlit as st
+        from tensorflow.keras.models import load_model
+        
+        @st.cache_resource
         def load_model_dl():
-            model = load_model("../model/eggrow_vision_model.h5")
-            classes = np.load("../model/labels.npy")
+            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+            
+            model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
+            class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
+        
+            model = load_model(model_path, compile=False)
+            classes = np.load(class_path)
+        
             return model, classes
-    
-        model_dl, class_names = load_model_dl()
-    
         # =========================
         # UI
         # =========================
