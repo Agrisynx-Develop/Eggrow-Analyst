@@ -137,7 +137,7 @@ for layer in base_model.layers[-30:]:
 # ======================
 # SAVE MODEL
 # ======================
-MODEL_PATH = os.path.join(BASE_DIR,  "eggrow_vision_model.h5")
+MODEL_PATH = os.path.join(BASE_DIR,  "eggrow_vision_model.keras")
 LABEL_PATH = os.path.join(BASE_DIR, "labels.npy")
 
 model.save(MODEL_PATH)
