@@ -840,7 +840,7 @@ elif menu == "Kesehatan":
             except:
                 st.error("AI tidak tersedia")
 
-       @st.cache_resource
+        @st.cache_resource
         def load_data_dl():
             BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         
