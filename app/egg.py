@@ -3,6 +3,7 @@ st.set_page_config(page_title="EggRow AI System", layout="wide")
 st.title("🐔 EggRow - Smart Poultry Decision Support System")
 
 import pandas as pd
+import tensorflow as tf
 import numpy as np
 import os
 import io
