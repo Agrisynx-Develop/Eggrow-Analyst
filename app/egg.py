@@ -845,7 +845,7 @@ elif menu == "Kesehatan":
         import os
         import streamlit as st
         import tensorflow as tf
-        from tensorflow import kera
+        from tensorflow import keras
         
         
         def load_data_dl():
