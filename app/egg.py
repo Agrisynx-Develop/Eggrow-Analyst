@@ -842,7 +842,10 @@ elif menu == "Kesehatan":
         
         @st.cache_resource
         def load_model_dl():
-            model = load_model("../model/eggrow_vision_model.keras")
+            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+            model_path = os.path.join(BASE_DIR, "model/eggrow_vision_model.keras" )
+            print("PATH:", model_path)
+            model = load_model(model_path)
             classes = np.load("../model/labels.npy")
             return model, classes
     
