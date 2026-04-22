@@ -851,13 +851,6 @@ elif menu == "Kesehatan":
             classes = np.load(class_path)
         
             return model, classes
-         df_model, df_class = load_model_dl()
-# =========================
-# LOAD SEKALI (GLOBAL)
-# =========================
-    
-        
-
 
         # =========================
         # UI
@@ -878,7 +871,7 @@ elif menu == "Kesehatan":
                 st.image(img_resized, channels="BGR")
         
                 if st.button("🔍 Analisis AI Vision"):
-                    pred = df_model.predict(img_input)
+                    pred = load_model_dl.predict(img_input)
         
                     idx = np.argmax(pred)
                     confidence = float(np.max(pred))
