@@ -29,7 +29,6 @@ from datetime import datetime
 import re
 import cv2
 from keras.models import load_model
-from pyzbar.pyzbar import decode
 from PIL import Image
 from scipy.optimize import linprog
 
