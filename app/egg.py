@@ -848,7 +848,7 @@ elif menu == "Kesehatan":
         model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
         class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
     
-        model = load_model(model_path)
+        model = load_model(model_path, compile=False))
         classes = np.load(class_path)
     
         return model, classes
