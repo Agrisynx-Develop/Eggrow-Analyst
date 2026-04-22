@@ -846,10 +846,11 @@ elif menu == "Kesehatan":
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
         
-        model_dl = load_model(model_path)
-        return model_dl
+        model = load_model(model_path)
+        return model
 
-            
+     model_dl, class_names = load_model_dl()
+        
     # =========================
     # UI
     # =========================
@@ -858,7 +859,7 @@ elif menu == "Kesehatan":
 
         uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
 
-        model_dl = load_model_dl()
+        model_dl = load_model()
         if uploaded_img:
             file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
             img = cv2.imdecode(file_bytes, 1)
