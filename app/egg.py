@@ -839,19 +839,14 @@ elif menu == "Kesehatan":
             except:
                 st.error("AI tidak tersedia")
 
-    import os
-    
-    @st.cache_resource
+     @st.cache_resource
     def load_model_dl():
-        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        
-        model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
-        class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
-    
-        model = load_model(model_path, compile=False))
-        classes = np.load(class_path)
-    
+        model = load_model("../model/eggrow_vision_model.h5")
+        classes = np.load("../model/labels.npy")
         return model, classes
+
+    model_dl, class_names = load_model_dl()
+
     # =========================
     # UI
     # =========================
@@ -860,7 +855,6 @@ elif menu == "Kesehatan":
 
         uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
 
-        model_dl = load_model_dl()
         if uploaded_img:
             file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
             img = cv2.imdecode(file_bytes, 1)
