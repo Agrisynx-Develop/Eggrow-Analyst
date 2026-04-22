@@ -693,19 +693,19 @@ elif menu == "Kesehatan":
     # ==============================
     @st.cache_data
     def load_data():
-    import os
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    data_path = os.path.join(BASE_DIR, "..", "Data")
+        import os
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        data_path = os.path.join(BASE_DIR, "..", "Data")
+    
+        df_gejala = pd.read_csv(os.path.join(data_path, "gejala_cf.csv"))
+        df_tanya = pd.read_csv(os.path.join(data_path, "pertanyaan.csv"))
+        df_penyakit = pd.read_csv(os.path.join(data_path, "relasi_penyakit.csv"))
+    
+        return df_gejala, df_tanya, df_penyakit
 
-    df_gejala = pd.read_csv(os.path.join(data_path, "gejala_cf.csv"))
-    df_tanya = pd.read_csv(os.path.join(data_path, "pertanyaan.csv"))
-    df_penyakit = pd.read_csv(os.path.join(data_path, "relasi_penyakit.csv"))
-
-    return df_gejala, df_tanya, df_penyakit
-
-    df_gejala, df_tanya, df_penyakit = load_data()
-
-    df = df_gejala.merge(df_tanya, on="kode_pertanyaan")
+        df_gejala, df_tanya, df_penyakit = load_data()
+    
+        df = df_gejala.merge(df_tanya, on="kode_pertanyaan")
 
     # =========================
     # CF MAP
