@@ -31,14 +31,8 @@ from reportlab.pdfgen import canvas
 from datetime import datetime
 import re
 import cv2
-import tensorflow as tf
-st.write("TF VERSION:", tf.__version__)
 from tensorflow.keras.models import load_model
-from tensorflow import keras
 
-model_dl = keras.models.load_model("eggrow_vision_model.keras")
-
-model_dl.save("model_fix.keras")
 from PIL import Image
 from scipy.optimize import linprog
 
@@ -850,6 +844,8 @@ elif menu == "Kesehatan":
         import numpy as np
         import os
         import streamlit as st
+        import tensorflow as tf
+        from tensorflow import kera
         
         
         def load_data_dl():
@@ -864,7 +860,10 @@ elif menu == "Kesehatan":
                 classes = np.load(class_path)
                 
                 return model, classes
-                    
+        model_dl = keras.models.load_model("eggrow_vision_model.keras")
+        
+        model_dl.save("model_fix.keras")
+        st.write("TF VERSION:", tf.__version__)            
         # =========================
         # UI
         # =========================
