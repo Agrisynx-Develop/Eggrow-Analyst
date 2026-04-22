@@ -838,18 +838,16 @@ elif menu == "Kesehatan":
                 st.write(res.text)
             except:
                 st.error("AI tidak tersedia")
-                
-        @st.cache_resource
-        def load_model_dl():
-            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
         
+        def load_model_dl():
             model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
             class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
-            
             model = load_model(model_path, compile=False, custom_objects={})
             classes = np.load(class_path)
-            model_dl, classes_name = load_model_dl()
             return model, classes
+    
+        model_dl, class_names = load_model_dl()
         
 
 
