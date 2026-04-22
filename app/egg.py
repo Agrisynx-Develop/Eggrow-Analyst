@@ -848,8 +848,10 @@ elif menu == "Kesehatan":
         def load_data_dl():
                 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
-                model_path = os.path.join(BASE_DIR, "model/eggrow_vision_model.keras")
+                model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
                 class_path = os.path.join(BASE_DIR, "model/labels.npy")
+                st.write("PATH:", model_path)
+                st.write("EXISTS:", os.path.exists(model_path))
                 
                 model = load_model(model_path, compile=False) 
                 classes = np.load(class_path)
