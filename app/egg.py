@@ -847,15 +847,15 @@ elif menu == "Kesehatan":
             model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
             class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
         
-            model = load_model(model_path, compile=False)
-            classes = np.load(class_path)
+            model_k= load_model(model_path, compile=False)
+            classes_k = np.load(class_path)
         
-            return model, classes
-
+            return model_k, classes_k
+        model_k, classes_k = load_model_dl()
         # =========================
         # UI
         # =========================
-        model_dl, class_names = load_model_dl()
+    
         with tab2:
             st.header("📷 Eggrow Vision (Deep Learning)")
         
@@ -871,8 +871,8 @@ elif menu == "Kesehatan":
                 st.image(img_resized, channels="BGR")
         
                 if st.button("🔍 Analisis AI Vision"):
-                    st.write(type(model_dl))
-                    pred = model_dl.predict(img_input)
+                    
+                    pred = model_k.predict(img_input)
         
                     idx = np.argmax(pred)
                     confidence = float(np.max(pred))
