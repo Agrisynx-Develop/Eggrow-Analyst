@@ -857,7 +857,7 @@ elif menu == "Kesehatan":
         
             return model, classes
         
-        model_dl, class_names = load_model_dl()
+    
         # =========================
         # UI
         # =========================
