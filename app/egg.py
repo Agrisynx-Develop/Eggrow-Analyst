@@ -846,15 +846,15 @@ elif menu == "Kesehatan":
         
         @st.cache_resource
         def load_data_dl():
-                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+             BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-                model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
-                class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
+            model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
+            class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
             
-                model = load_model(model_path, compile=False)  # ✅ INI YANG BENAR
-                classes = np.load(class_path)
+            model = load_model(model_path, compile=False) 
+            classes = np.load(class_path)
             
-                return model, classes
+            return model, classes
                 
         model_dl, class_dl  = load_data_dl()
     
