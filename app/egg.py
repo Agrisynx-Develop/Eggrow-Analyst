@@ -840,27 +840,13 @@ elif menu == "Kesehatan":
             except:
                 st.error("AI tidak tersedia")
 
-        from keras.models import load_model
-        import numpy as np
-        import os
-        import streamlit as st
-        import tensorflow as tf
-        from tensorflow import keras
-        
-        
-        def load_data_dl():
-                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        @st.cache_resource
+        def load_model_dl():
+            model = load_model("../model/eggrow_vision_model.h5")
+            classes = np.load("../model/labels.npy")
+            return model, classes
     
-                model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
-                class_path = os.path.join(BASE_DIR, "model/labels.npy")
-                st.write("PATH:", model_path)
-                st.write("EXISTS:", os.path.exists(model_path))
-                
-                model = load_model(model_path, compile=False) 
-                classes = np.load(class_path)
-                
-                return model, classes
-        model_dl = keras.models.load_model("eggrow_vision_model.keras")
+        model_dl, class_names = load_model_dl()
         
         model_dl.save("model_fix.keras")
         st.write("TF VERSION:", tf.__version__)            
