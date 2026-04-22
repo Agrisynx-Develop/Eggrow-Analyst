@@ -839,28 +839,25 @@ elif menu == "Kesehatan":
             except:
                 st.error("AI tidak tersedia")
 
+        from keras.models import load_model
+        import numpy as np
+        import os
+        import streamlit as st
+        
         @st.cache_resource
         def load_data_dl():
-            import os
-        
             BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         
             model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
             class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
         
-            model = load_model(model_path, compile=False)  # ✅ INI YANG BENAR
+            # DEBUG
+            print("PATH:", model_path)
+            print("EXIST:", os.path.exists(model_path))
+        
+            model = load_model(model_path, compile=False)
             classes = np.load(class_path)
         
-            return model, classes
-            
-        @st.cache_data
-        def load_data_dl():
-            import os
-            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-            model_path = os.path.join(BASE_DIR, "..", "model")
-        
-            model = os.path.join(model_path, "..", "model", "eggrow_vision_model.keras")
-            classes = np.load(os.path.join(BASE_DIR, "..", "model", "labels.npy"))
             return model, classes
     
         model_dl, class_dl  = load_data_dl()
