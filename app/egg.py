@@ -841,10 +841,10 @@ elif menu == "Kesehatan":
 
     @st.cache_resource
     import os
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
-
-    model = load_model(model_path)
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
+    
+        model = load_model(model_path)
 
     # =========================
     # UI
