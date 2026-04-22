@@ -842,6 +842,7 @@ elif menu == "Kesehatan":
         
         @st.cache_resource
         def load_model_dl():
+            import os
             BASE_DIR = os.path.dirname(os.path.abspath(__file__))
             model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
             class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
@@ -850,11 +851,11 @@ elif menu == "Kesehatan":
             classes = np.load(class_path)
         
             return model, classes
-
+         df_model, df_class = load_model_dl()
 # =========================
 # LOAD SEKALI (GLOBAL)
 # =========================
-            model_dl, class_names = load_model_dl()
+    
         
 
 
@@ -877,7 +878,7 @@ elif menu == "Kesehatan":
                 st.image(img_resized, channels="BGR")
         
                 if st.button("🔍 Analisis AI Vision"):
-                    pred = model_dl.predict(img_input)
+                    pred = df_model.predict(img_input)
         
                     idx = np.argmax(pred)
                     confidence = float(np.max(pred))
