@@ -840,7 +840,7 @@ elif menu == "Kesehatan":
                 st.error("AI tidak tersedia")
 
     @st.cache_resource
-
+    import os
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
 
