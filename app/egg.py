@@ -703,9 +703,9 @@ elif menu == "Kesehatan":
     
         return df_gejala, df_tanya, df_penyakit
 
-        df_gejala, df_tanya, df_penyakit = load_data()
+    df_gejala, df_tanya, df_penyakit = load_data()
     
-        df = df_gejala.merge(df_tanya, on="kode_pertanyaan")
+    df = df_gejala.merge(df_tanya, on="kode_pertanyaan")
 
     # =========================
     # CF MAP
