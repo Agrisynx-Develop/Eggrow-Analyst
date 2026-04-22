@@ -840,11 +840,6 @@ elif menu == "Kesehatan":
                 st.error("AI tidak tersedia")
                 
         @st.cache_resource
-        import os
-        import numpy as np
-        import streamlit as st
-        from tensorflow.keras.models import load_model
-       
         def load_model_dl():
             BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         
