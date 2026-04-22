@@ -847,9 +847,6 @@ elif menu == "Kesehatan":
             model = load_model(model_path, compile=False, custom_objects={})
             classes = np.load(class_path)
             return model, classes
-    
-        model_dl = load_model_dl()
-        class_name = load_model_dl()
         
 
 
@@ -872,7 +869,7 @@ elif menu == "Kesehatan":
                 st.image(img_resized, channels="BGR")
         
                 if st.button("🔍 Analisis AI Vision"):
-                    pred = model_dl.predict(img_input)
+                    pred = model.predict(img_input)
         
                     idx = np.argmax(pred)
                     confidence = float(np.max(pred))
