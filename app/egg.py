@@ -1,9 +1,5 @@
 import streamlit as st
-st.set_page_config(page_title="EggRow AI System", layout="wide")
-st.title("🐔 EggRow - Smart Poultry Decision Support System")
-
 import pandas as pd
-import tensorflow as tf
 import numpy as np
 import os
 import io
@@ -32,8 +28,8 @@ from reportlab.pdfgen import canvas
 from datetime import datetime
 import re
 import cv2
-from tensorflow.keras.models import load_model
-
+from keras.models import load_model
+from pyzbar.pyzbar import decode
 from PIL import Image
 from scipy.optimize import linprog
 
@@ -41,7 +37,8 @@ from scipy.optimize import linprog
 # =====================================================
 # CONFIGURATION
 # =====================================================
-
+st.set_page_config(page_title="EggRow AI System", layout="wide")
+st.title("🐔 EggRow - Smart Poultry Decision Support System")
 
 os.makedirs("database", exist_ok=True)
 db_path = "database/produktivitias_db.csv"
@@ -70,6 +67,7 @@ def clean_numeric(x):
     x = re.sub(r"[^\d.]", "", str(x))
     return pd.to_numeric(x, errors="coerce")
 
+
 # -------------------- STATEFUL BUTTON --------------------
 def stateful_button(*args, key=None, **kwargs):
     if key is None:
@@ -88,18 +86,9 @@ def stateful_button(*args, key=None, **kwargs):
 # =====================================================
 # SIDEBAR
 # =====================================================
-if "menu" not in st.session_state:
-    st.session_state.menu = "Dashboard"
-
-
-# =========================
-# 2. SIDEBAR MENU
-# =========================
-
 menu = st.sidebar.selectbox(
     "Menu",
-    ["Dashboard", "Analisis Prediksi", "Nutrisi", "Kesehatan", "Summary"],
-    key="menu"
+    ["Dashboard", "Analisis Prediksi", "Nutrisi", "Kesehatan", "Summary"]
 )
 
 
@@ -142,163 +131,158 @@ if menu == "Dashboard":
     with st.expander("View Data"):
         st.dataframe(df)
    
-    tab1 = st.tabs([
-    "Produktivitas"
-    ])
+    st.header("🥚PRODUKTIVITAS")
+    st.header("Filter Data Berdasarkan Tanggal")
+
+    # Pastikan kolom tanggal ada
+    if "tanggal" not in df.columns:
+        st.error("Kolom 'tanggal' tidak ditemukan")
+        st.stop()
+
+    # Convert ke datetime
+    df['tanggal'] = pd.to_datetime(df['tanggal']).dt.strftime('%Y-%m-%d')
+
+    filter_type = st.radio(
+        "Pilih Filter Tanggal",
+        ["Semua Data", "Tanggal tertentu", "Range tanggal"]
+    )
+
+    # Default
+    df_filtered = df.copy()
     
-    # -------------------- TAB 1 --------------------
-    with tab1:
-        st.header("Filter Data Berdasarkan Tanggal")
+    if filter_type == "Tanggal tertentu":
+        selected_date = st.date_input("Pilih tanggal")
+        df_filtered = df[df["tanggal"] == (selected_date)]
 
-        # Pastikan kolom tanggal ada
-        if "tanggal" not in df.columns:
-            st.error("Kolom 'tanggal' tidak ditemukan")
-            st.stop()
+    elif filter_type == "Range tanggal":
+        df["tanggal"] = pd.to_datetime(df["tanggal"]).dt.date
 
-        # Convert ke datetime
-        df['tanggal'] = pd.to_datetime(df['tanggal']).dt.strftime('%Y-%m-%d')
+        # input user
+        start_date = st.date_input("Start date")
+        end_date = st.date_input("End date")
 
-        filter_type = st.radio(
-            "Pilih Filter Tanggal",
-            ["Semua Data", "Tanggal tertentu", "Range tanggal"]
-        )
-
-        # Default
-        df_filtered = df.copy()
-        
-        if filter_type == "Tanggal tertentu":
-            selected_date = st.date_input("Pilih tanggal")
-            df_filtered = df[df["tanggal"] == (selected_date)]
-
-        elif filter_type == "Range tanggal":
-            df["tanggal"] = pd.to_datetime(df["tanggal"]).dt.date
+        # filter
+        df_filtered = df[
+            (df["tanggal"] >= start_date) &
+            (df["tanggal"] <= end_date)
+        ]
     
-            # input user
-            start_date = st.date_input("Start date")
-            end_date = st.date_input("End date")
 
-            # filter
-            df_filtered = df[
-                (df["tanggal"] >= start_date) &
-                (df["tanggal"] <= end_date)
-            ]
-        
+    # Hindari warning pandas
+    df_filtered = df_filtered.copy()
 
-        # Hindari warning pandas
-        df_filtered = df_filtered.copy()
+    st.write("Data setelah filter:")
+    st.dataframe(df_filtered)
 
-        st.write("Data setelah filter:")
+
+    # ==================== HITUNG INDIKATOR ====================
+    st.subheader("Hitung Indikator Produksi")
+
+    required_cols = [
+        "konsumsi pakan",
+        "jumlah telur",
+        "berat telur rata-rata",
+        "jumlah ternak",
+        "harga pakan",
+        "harga telur"
+    ]
+
+    # Cek kolom wajib
+    missing_cols = [col for col in required_cols if col not in df_filtered.columns]
+    if missing_cols:
+        st.error(f"Kolom berikut belum ada: {missing_cols}")
+        st.stop()
+
+    if st.button("Hitung Indikator"):
+
+        # Pastikan tipe data numerik
+        df_filtered[required_cols] = df_filtered[required_cols].astype(float)
+
+        # Hindari pembagian nol
+        safe_divisor = (df_filtered["jumlah telur"] * df_filtered["berat telur rata-rata"]).replace(0, np.nan)
+
+        # Perhitungan
+        df_filtered["fcr"] = df_filtered["konsumsi pakan"] / safe_divisor
+
+        df_filtered["hdp"] = (df_filtered["jumlah telur"] / df_filtered["jumlah ternak"]) * 100
+        df_filtered["hdp"] = np.where(df_filtered["hdp"] > 100, np.nan,df_filtered["hdp"])
+        df_filtered["feed cost"] = (df_filtered["konsumsi pakan"] * df_filtered["harga pakan"]) / safe_divisor
+
+        df_filtered["revenue"] = (df_filtered["jumlah telur"] * df_filtered["berat telur rata-rata"]) * df_filtered["harga telur"]
+
+        df_filtered["total feed cost"] = df_filtered["konsumsi pakan"] * df_filtered["harga pakan"]
+
+        df_filtered["profit"] = df_filtered["revenue"] - df_filtered["total feed cost"]
+
+        # Rapikan angka
+        df_filtered = df_filtered.round(2)
+
+        st.success("Indikator berhasil dihitung")
+
+        # ==================== OUTPUT ====================
+        st.session_state["df_filtered"] = df_filtered
+
+        # ================== TAMPILKAN DATA ==================
         st.dataframe(df_filtered)
 
+        # ================== SIMPAN KE DATABASE ==================
+        db_path = "database/hasil_analisis.csv"
 
-        # ==================== HITUNG INDIKATOR ====================
-        st.subheader("Hitung Indikator Produksi")
+        if st.button("💾 Simpan ke Database"):
 
-        required_cols = [
-            "konsumsi pakan",
-            "jumlah telur",
-            "berat telur rata-rata",
-            "jumlah ternak",
-            "harga pakan",
-            "harga telur"
-        ]
+            os.makedirs("database", exist_ok=True)
 
-        # Cek kolom wajib
-        missing_cols = [col for col in required_cols if col not in df_filtered.columns]
-        if missing_cols:
-            st.error(f"Kolom berikut belum ada: {missing_cols}")
-            st.stop()
+            save_df = df_filtered.copy()
 
-        if st.button("Hitung Indikator"):
+            if os.path.exists(db_path):
+                old = pd.read_csv(db_path)
+                save_df = pd.concat([old, save_df], ignore_index=True)
 
-            # Pastikan tipe data numerik
-            df_filtered[required_cols] = df_filtered[required_cols].astype(float)
+            save_df.to_csv(db_path, index=False)
 
-            # Hindari pembagian nol
-            safe_divisor = (df_filtered["jumlah telur"] * df_filtered["berat telur rata-rata"]).replace(0, np.nan)
+            st.success("Data berhasil disimpan")
 
-            # Perhitungan
-            df_filtered["fcr"] = df_filtered["konsumsi pakan"] / safe_divisor
+        st.subheader("Ringkasan")
+        
+        col1, col2, col3, col4, col5 = st.columns(5)
 
-            df_filtered["hdp"] = (df_filtered["jumlah telur"] / df_filtered["jumlah ternak"]) * 100
-            df_filtered["hdp"] = np.where(df_filtered["hdp"] > 100, np.nan,df_filtered["hdp"])
-            df_filtered["feed cost"] = (df_filtered["konsumsi pakan"] * df_filtered["harga pakan"]) / safe_divisor
+        with col1:
+            st.metric("FCR", round(df_filtered['fcr'].mean(), 3))
 
-            df_filtered["revenue"] = (df_filtered["jumlah telur"] * df_filtered["berat telur rata-rata"]) * df_filtered["harga telur"]
+        with col2:
+            st.metric("HDP (%)", round(df_filtered['hdp'].mean(), 2))
 
-            df_filtered["total feed cost"] = df_filtered["konsumsi pakan"] * df_filtered["harga pakan"]
+        with col3:
+            st.metric("Feed Cost / kg egg", format_rupiah(df_filtered['feed cost'].mean()))
 
-            df_filtered["profit"] = df_filtered["revenue"] - df_filtered["total feed cost"]
+        with col4:
+            st.metric("Total Profit", format_rupiah(df_filtered['profit'].sum()))
 
-            # Rapikan angka
-            df_filtered = df_filtered.round(2)
+        with col5:
+            st.metric("Rata-rata Profit", format_rupiah(df_filtered['profit'].mean()))
 
-            st.success("Indikator berhasil dihitung")
+        # ================= ALERT =================
+        hdp_value = df_filtered['hdp'].mean()
+        fcr_value = df_filtered['fcr'].mean()
 
-            # ==================== OUTPUT ====================
-            st.session_state["df_filtered"] = df_filtered
+        if hdp_value < HDP_ALERT:
+            st.error("⚠️ HDP di bawah standar!")
+        elif HDP_OPTIMAL[0] <= hdp_value <= HDP_OPTIMAL[1]:
+            st.success("✅ HDP optimal")
+        else:
+            st.warning("⚠️ HDP tidak ideal")
 
-            # ================== TAMPILKAN DATA ==================
-            st.dataframe(df_filtered)
+        if fcr_value > FCR_ALERT:
+            st.error("⚠️ FCR melebihi standar!")
+        elif FCR_OPTIMAL[0] <= fcr_value <= FCR_OPTIMAL[1]:
+            st.success("✅ FCR optimal")
+        else:
+            st.warning("⚠️ FCR tidak ideal")
+        # ==================== GRAFIK ====================
+        import plotly.express as px
 
-            # ================== SIMPAN KE DATABASE ==================
-            db_path = "database/hasil_analisis.csv"
-
-            if st.button("💾 Simpan ke Database"):
-
-                os.makedirs("database", exist_ok=True)
-
-                save_df = df_filtered.copy()
-
-                if os.path.exists(db_path):
-                    old = pd.read_csv(db_path)
-                    save_df = pd.concat([old, save_df], ignore_index=True)
-
-                save_df.to_csv(db_path, index=False)
-
-                st.success("Data berhasil disimpan")
-
-            st.subheader("Ringkasan")
-            
-            col1, col2, col3, col4, col5 = st.columns(5)
-
-            with col1:
-                st.metric("FCR", round(df_filtered['fcr'].mean(), 3))
-
-            with col2:
-                st.metric("HDP (%)", round(df_filtered['hdp'].mean(), 2))
-
-            with col3:
-                st.metric("Feed Cost / kg egg", format_rupiah(df_filtered['feed cost'].mean()))
-
-            with col4:
-                st.metric("Total Profit", format_rupiah(df_filtered['profit'].sum()))
-
-            with col5:
-                st.metric("Rata-rata Profit", format_rupiah(df_filtered['profit'].mean()))
-
-            # ================= ALERT =================
-            hdp_value = df_filtered['hdp'].mean()
-            fcr_value = df_filtered['fcr'].mean()
-
-            if hdp_value < HDP_ALERT:
-                st.error("⚠️ HDP di bawah standar!")
-            elif HDP_OPTIMAL[0] <= hdp_value <= HDP_OPTIMAL[1]:
-                st.success("✅ HDP optimal")
-            else:
-                st.warning("⚠️ HDP tidak ideal")
-
-            if fcr_value > FCR_ALERT:
-                st.error("⚠️ FCR melebihi standar!")
-            elif FCR_OPTIMAL[0] <= fcr_value <= FCR_OPTIMAL[1]:
-                st.success("✅ FCR optimal")
-            else:
-                st.warning("⚠️ FCR tidak ideal")
-            # ==================== GRAFIK ====================
-            import plotly.express as px
-
-            fig = px.line(df_filtered, x="tanggal", y="profit", title="Profit over Time")
-            st.plotly_chart(fig)
+        fig = px.line(df_filtered, x="tanggal", y="profit", title="Profit over Time")
+        st.plotly_chart(fig)
 
 
 
@@ -704,24 +688,20 @@ elif menu == "Kesehatan":
     # ==============================
     @st.cache_data
     def load_data():
-        import os
-        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        data_path = os.path.join(BASE_DIR, "..", "Data")
-    
-        df_gejala = pd.read_csv(os.path.join(data_path, "gejala_cf.csv"))
-        df_tanya = pd.read_csv(os.path.join(data_path, "pertanyaan.csv"))
-        df_penyakit = pd.read_csv(os.path.join(data_path, "relasi_penyakit.csv"))
-    
+        df_gejala = pd.read_csv("../Data/gejala_cf.csv")
+        df_tanya = pd.read_csv("../Data/pertanyaan.csv")
+        df_penyakit = pd.read_csv("../Data/relasi_penyakit.csv")
         return df_gejala, df_tanya, df_penyakit
 
     df_gejala, df_tanya, df_penyakit = load_data()
-    
+
     df = df_gejala.merge(df_tanya, on="kode_pertanyaan")
 
     # =========================
     # CF MAP
     # =========================
     cf_map = {
+        "JAWAB"    : 0,
         "Tidak Ada": -0.8,
         "Kemungkinan Kecil": 0.3,
         "Kemungkinan Besar": 0.6,
@@ -818,12 +798,12 @@ elif menu == "Kesehatan":
 
             persen_terbaik = max(0, terbaik["cf"] * 100)
 
-            st.success(f"""
+            cf_results = st.success(f"""
             🐔 Kemungkinan terbesar:
             **{terbaik['penyakit']}**
             ({persen_terbaik:.2f}%)
             """)
-
+            st.session_state["cf_results"] = hasil
             # =========================
             # PROGRESS BAR AMAN
             # =========================
@@ -850,69 +830,14 @@ elif menu == "Kesehatan":
             except:
                 st.error("AI tidak tersedia")
 
-    #@st.cache_resource
-    #def load_model_dl():
-        #BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    
-        #model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
-        #label_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
-    
-        #st.write("MODEL PATH:", model_path)
-        #st.write("MODEL EXISTS:", os.path.exists(model_path))
-        #st.write("LABEL EXISTS:", os.path.exists(label_path))
-    
-        #if not os.path.exists(model_path):
-          #  st.error(f"❌ Model tidak ditemukan: {model_path}")
-         #   st.stop()
-    
-        #try:
-           # model = tf.keras.models.load_model(
-          #      model_path,
-         #       compile=False
-           # )
-        #except Exception as e:
-          #  st.error(f"❌ ERROR LOAD MODEL: {e}")
-         #   st.stop()
-    
-        #classes = np.load(label_path)
-    
-       # return model, classes
-    
-    import os
-    import gdown
-    import tensorflow as tf
-    import numpy as np
-    import streamlit as st
-    
-    MODEL_URL = "https://drive.google.com/uc?id=1qxBNidiaX2zFzOSlFUn3eaC3bAYxiMLF"
-    MODEL_PATH = "model/eggrow_vision_model.h5"
-    LABEL_PATH = "model/labels.npy"
-    
-    
-    def download_model():
-        if os.path.exists(MODEL_PATH):
-            os.remove(MODEL_PATH)  # 🔥 force download ulang
-    
-        os.makedirs("model", exist_ok=True)
-    
-        st.write("⬇️ Downloading model...")
-        gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
-    
-        st.write("✅ Done")
-        st.write("Size:", os.path.getsize(MODEL_PATH))
-    
-    
     @st.cache_resource
     def load_model_dl():
-        download_model()
-    
-        model = tf.keras.models.load_model(MODEL_PATH, compile=False)
-        classes = np.load(LABEL_PATH)
-    
-        return model, classes
-    
-    
-    model_dl, class_names = load_model_dl()   
+        model1 = load_model("../model/eggrow_vision_model.keras")
+        classes = np.load("../model/labels.npy")
+        return model1, classes
+
+    model_dl, class_names = load_model_dl()
+
     # =========================
     # UI
     # =========================
@@ -939,19 +864,114 @@ elif menu == "Kesehatan":
 
                 penyakit = class_names[idx]
 
-                st.success(f"""
+                vision_results = st.success(f"""
                 🐔 Prediksi:
                 **{penyakit}**
                 Confidence: {confidence*100:.2f}%
-                """)   
-                # =========================
+                """)
+                st.session_state["vision_results"] = {
+                    class_names[i]: float(pred[0][i])
+                    for i in range(len(class_names))
+                }
+    # =========================
     # TAB 3 → COMBINE
     # =========================
     with tab3:
-        st.header("Combine Analysis")
+        st.header("🧠 Combine Analysis (CF + Vision AI)")
 
         if st.button("🚀 Analisis Menyeluruh"):
-            st.info("Gunakan hasil CF + gambar untuk analisis gabungan (custom logic bisa ditambahkan)")
+
+            # =========================
+            # VALIDASI DATA
+            # =========================
+            if "cf_results" not in st.session_state:
+                st.warning("⚠️ Jalankan diagnosa CF terlebih dahulu!")
+                st.stop()
+
+            if "vision_results" not in st.session_state:
+                st.warning("⚠️ Jalankan analisis Vision terlebih dahulu!")
+                st.stop()
+
+            cf_end = st.session_state["cf_results"]
+            vision_end = st.session_state["vision_results"]
+
+            # =========================
+            # CONVERT CF
+            # =========================
+            cf_dict = {h["penyakit"]: h["cf"] for h in cf_end}
+
+            # =========================
+            # COMBINE LOGIC
+            # =========================
+            final_results = {}
+
+            for penyakit1 in vision_end.keys():
+
+                cf_val = cf_dict.get(penyakit1, 0)
+                vision_val = vision_end.get(penyakit1, 0)
+
+                # 🔥 Dynamic weight
+                if cf_val > 0.6:
+                    w_cf, w_vis = 0.6, 0.4
+                else:
+                    w_cf, w_vis = 0.3, 0.7
+
+                final_score = (w_cf * cf_val) + (w_vis * vision_val)
+                final_results[penyakit1] = final_score
+
+            # =========================
+            # SORTING
+            # =========================
+            final_sorted = sorted(final_results.items(), key=lambda x: x[1], reverse=True)
+
+            # =========================
+            # OUTPUT
+            # =========================
+            st.subheader("📊 Hasil Gabungan AI")
+
+            for penyakit1, score in final_sorted:
+                st.write(f"**{penyakit1}** → {score*100:.2f}%")
+
+            terbaik1 = final_sorted[0]
+            confidence1 = terbaik1[1] * 100
+
+            st.success(f"""
+            🐔 Diagnosis Akhir:
+            **{terbaik1[0]}**
+            ({confidence1:.2f}%)
+            """)
+
+            # =========================
+            # PROGRESS BAR
+            # =========================
+            st.progress(int(max(0, min(100, confidence1))))
+
+            # =========================
+            # VALIDASI CONFIDENCE
+            # =========================
+            if confidence1 < 50:
+                st.warning("⚠️ Tingkat keyakinan rendah, perlu observasi lebih lanjut")
+
+            # =========================
+            # AI EXPLANATION
+            # =========================
+            prompt = f"""
+            Penyakit: {terbaik1[0]}
+            Confidence: {confidence1:.2f}%
+
+            Jelaskan:
+            - Penyebab
+            - Dampak produksi
+            - Tindakan cepat
+            - Pencegahan
+            """
+
+            try:
+                res = model.generate_content(prompt)
+                st.subheader("🤖 Insight AI Gabungan")
+                st.write(res.text)
+            except:
+                st.error("AI tidak tersedia")
 
 elif menu == "Summary":
 
