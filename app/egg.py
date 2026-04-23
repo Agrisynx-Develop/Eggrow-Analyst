@@ -850,34 +850,39 @@ elif menu == "Kesehatan":
             except:
                 st.error("AI tidak tersedia")
 
+    #@st.cache_resource
+    #def load_model_dl():
+        #BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    
+        #model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
+        #label_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
+    
+        #st.write("MODEL PATH:", model_path)
+        #st.write("MODEL EXISTS:", os.path.exists(model_path))
+        #st.write("LABEL EXISTS:", os.path.exists(label_path))
+    
+        #if not os.path.exists(model_path):
+          #  st.error(f"❌ Model tidak ditemukan: {model_path}")
+         #   st.stop()
+    
+        #try:
+           # model = tf.keras.models.load_model(
+          #      model_path,
+         #       compile=False
+            )
+        #except Exception as e:
+          #  st.error(f"❌ ERROR LOAD MODEL: {e}")
+         #   st.stop()
+    
+        #classes = np.load(label_path)
+    
+       # return model, classes
+    
     @st.cache_resource
     def load_model_dl():
-        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    
-        model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
-        label_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
-    
-        st.write("MODEL PATH:", model_path)
-        st.write("MODEL EXISTS:", os.path.exists(model_path))
-        st.write("LABEL EXISTS:", os.path.exists(label_path))
-    
-        if not os.path.exists(model_path):
-            st.error(f"❌ Model tidak ditemukan: {model_path}")
-            st.stop()
-    
-        try:
-            model = tf.keras.models.load_model(
-                model_path,
-                compile=False
-            )
-        except Exception as e:
-            st.error(f"❌ ERROR LOAD MODEL: {e}")
-            st.stop()
-    
-        classes = np.load(label_path)
-    
+        model = load_model("../model/eggrow_vision_model.h5")
+        classes = np.load("../model/labels.npy")
         return model, classes
-    
     
     # LOAD SEKALI
     model_dl, class_names = load_model_dl()    
