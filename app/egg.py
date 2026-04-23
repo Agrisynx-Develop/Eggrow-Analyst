@@ -841,7 +841,7 @@ elif menu == "Kesehatan":
         classes = np.load("../model/labels.npy")
         return model1, classes
 
-    #model_dl, class_names = load_model_dl()
+    model_dl, class_names = load_model_dl()
 
     # =========================
     # UI
@@ -863,7 +863,7 @@ elif menu == "Kesehatan":
 
             if st.button("🔍 Analisis AI Vision"):
 
-                pred = model1.predict(img_input)
+                pred = model_dl.predict(img_input)
                 idx = np.argmax(pred)
                 confidence = float(np.max(pred))
 
