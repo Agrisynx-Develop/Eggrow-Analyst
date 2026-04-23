@@ -686,9 +686,8 @@ elif menu == "Kesehatan":
     # ==============================
     # LOAD DATA (GLOBAL)
     # ==============================
-    
-    @st.cache_data
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    @st.cache_data
     def load_data():
         DATA_DIR = os.path.join(BASE_DIR, "..", "Data")
         df_gejala = pd.read_csv(os.path.join(DATA_DIR, "gejala_cf.csv"))
