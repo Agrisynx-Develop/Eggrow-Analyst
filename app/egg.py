@@ -840,48 +840,44 @@ elif menu == "Kesehatan":
         model1 = load_model("../model/eggrow_vision_model.keras")
         classes = np.load("../model/labels.npy")
         return model1, classes
-    
+
+    model_dl, class_names = load_model_dl()
+
     # =========================
-    # VALIDASI LOAD
+    # UI
     # =========================
-    if model_dl is None:
-        st.error(f"❌ Gagal load model: {class_names}")
-        st.stop()
-    else:
-        st.success("✅ Model siap digunakan")  
-            
-        with tab2:
-            st.header("📷 Eggrow Vision (Deep Learning)")
-    
-            uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
-    
-            if uploaded_img:
-                file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
-                img = cv2.imdecode(file_bytes, 1)
-    
-                img_resized = cv2.resize(img, (128, 128))
-                img_norm = img_resized / 255.0
-                img_input = np.expand_dims(img_norm, axis=0)
-    
-                st.image(img_resized, channels="BGR")
-    
-                if st.button("🔍 Analisis AI Vision"):
-    
-                    pred = model_dl.predict(img_input)
-                    idx = np.argmax(pred)
-                    confidence = float(np.max(pred))
-    
-                    penyakit = class_names[idx]
-    
-                    vision_results = st.success(f"""
-                    🐔 Prediksi:
-                    **{penyakit}**
-                    Confidence: {confidence*100:.2f}% 
-                    """)
-                    st.session_state["vision_results"] = {
-                        class_names[i]: float(pred[0][i])
-                        for i in range(len(class_names))
-                    }
+    with tab2:
+        st.header("📷 Eggrow Vision (Deep Learning)")
+
+        uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
+
+        if uploaded_img:
+            file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
+            img = cv2.imdecode(file_bytes, 1)
+
+            img_resized = cv2.resize(img, (128, 128))
+            img_norm = img_resized / 255.0
+            img_input = np.expand_dims(img_norm, axis=0)
+
+            st.image(img_resized, channels="BGR")
+
+            if st.button("🔍 Analisis AI Vision"):
+
+                pred = model_dl.predict(img_input)
+                idx = np.argmax(pred)
+                confidence = float(np.max(pred))
+
+                penyakit = class_names[idx]
+
+                vision_results = st.success(f"""
+                🐔 Prediksi:
+                **{penyakit}**
+                Confidence: {confidence*100:.2f}%
+                """)
+                st.session_state["vision_results"] = {
+                    class_names[i]: float(pred[0][i])
+                    for i in range(len(class_names))
+                }
     # =========================
     # TAB 3 → COMBINE
     # =========================
