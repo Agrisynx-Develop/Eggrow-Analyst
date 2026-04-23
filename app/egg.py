@@ -854,9 +854,16 @@ elif menu == "Kesehatan":
     def load_model_dl():
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
+        # PATH BENAR
         model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
         label_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
     
+        # DEBUG WAJIB (biar kelihatan di Streamlit)
+        st.write("MODEL PATH:", model_path)
+        st.write("MODEL EXISTS:", os.path.exists(model_path))
+        st.write("LABEL EXISTS:", os.path.exists(label_path))
+    
+        # VALIDASI
         if not os.path.exists(model_path):
             st.error(f"❌ Model tidak ditemukan: {model_path}")
             st.stop()
@@ -865,10 +872,10 @@ elif menu == "Kesehatan":
             st.error(f"❌ Label tidak ditemukan: {label_path}")
             st.stop()
     
+        # LOAD MODEL
         model = tf.keras.models.load_model(
             model_path,
-            compile=False,
-            safe_mode=False
+            compile=False
         )
     
         classes = np.load(label_path)
@@ -876,7 +883,8 @@ elif menu == "Kesehatan":
         return model, classes
     
     
-    model_dl, class_names = load_model_dl()
+    # LOAD SEKALI
+    model_dl, class_names = load_model_dl()    
     # =========================
     # UI
     # =========================
