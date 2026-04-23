@@ -834,7 +834,7 @@ elif menu == "Kesehatan":
                 st.error("AI tidak tersedia")
                 
     @st.cache_data           
-    load_model_dl():
+    def load_model_dl():
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
         model_dl = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
