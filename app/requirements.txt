@@ -1,24 +1,17 @@
 streamlit==1.36.0
-
-tensorflow-cpu==2.15.0
-
+tensorflow==2.15.0
+keras==2.15.0
 numpy==1.24.3
 pandas==1.5.3
 scikit-learn==1.2.2
-scipy==1.11.4
-
 opencv-python-headless==4.8.0.76
-Pillow==9.5.0
-
-h5py==3.16.0
-protobuf==4.25.9
-
-matplotlib==3.8.2
-seaborn==0.13.2
-plotly==5.22.0
-reportlab==4.0.4
+pillow==9.5.0
+h5py==3.9.0
+protobuf==4.25.3
+google-generativeai==0.8.3
+reportlab==4.0.9
+matplotlib==3.7.1
+seaborn==0.12.2
 
 gdown==5.1.0
 
-# optional (kalau dipakai)
-google-generativeai==0.8.6
