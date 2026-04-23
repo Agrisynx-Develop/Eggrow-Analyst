@@ -88,9 +88,18 @@ def stateful_button(*args, key=None, **kwargs):
 # =====================================================
 # SIDEBAR
 # =====================================================
+if "menu" not in st.session_state:
+    st.session_state.menu = "Dashboard"
+
+
+# =========================
+# 2. SIDEBAR MENU
+# =========================
+
 menu = st.sidebar.selectbox(
     "Menu",
     ["Dashboard", "Analisis Prediksi", "Nutrisi", "Kesehatan", "Summary"]
+    key="menu"
 )
 
 
@@ -841,8 +850,8 @@ elif menu == "Kesehatan":
             except:
                 st.error("AI tidak tersedia")
 
-     @st.cache_resource
-     def load_model_dl():
+    @st.cache_resource
+    def load_model_dl():
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
         model_path = os.path.join(BASE_DIR, "..", "model", "clean_model.h5")
@@ -867,11 +876,11 @@ elif menu == "Kesehatan":
         return model, classes
     
     
-     model_dl, class_names = load_model_dl()
+    model_dl, class_names = load_model_dl()
     # =========================
     # UI
     # =========================
-     with tab2:
+    with tab2:
         st.header("📷 Eggrow Vision (Deep Learning)")
 
         uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
