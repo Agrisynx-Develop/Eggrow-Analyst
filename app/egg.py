@@ -836,17 +836,19 @@ elif menu == "Kesehatan":
 
     @st.cache_resource
     def load_model_and_labels():
-        model2 = load_model("model/eggrow_vision_model.keras")
-        classes = np.load("model/labels.npy", allow_pickle=True)
-        return model2, classes
+        try:
+            model = load_model("model/eggrow_vision_model.keras", compile=False)
+            classes = np.load("model/labels.npy", allow_pickle=True)
+            return model, classes
+        except Exception as e:
+            return None, str(e)
     
-
-    # =========================
-    # UI
-    # =========================
-    model_dl = load_model_and_labels()
-    class_names = load_model_and_labels()
+    model_dl, class_names = load_model_and_labels()
     
+    if model_dl is None:
+        st.error(f"Error load model: {class_names}")
+        st.stop()    
+        
     with tab2:
         st.header("📷 Eggrow Vision (Deep Learning)")
 
