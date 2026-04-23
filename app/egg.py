@@ -832,15 +832,16 @@ elif menu == "Kesehatan":
                 st.write(res.text)
             except:
                 st.error("AI tidak tersedia")
+                
+    load_model_dl():
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-    MODEL_PATH = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
-    LABEL_PATH = os.path.join(BASE_DIR, "..", "model", "labels.npy")
-    
-    model1 = load_model(MODEL_PATH)
-    classes = np.load(LABEL_PATH)
- 
+        MODEL_PATH = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
+        LABEL_PATH = os.path.join(BASE_DIR, "..", "model", "labels.npy")
+        
+        model1 = load_model(MODEL_PATH)
+        classes = np.load(LABEL_PATH)
+     
    # @st.cache_resource
     #def load_model_dl():
       #  model1 = load_model("../model/eggrow_vision_model.keras")
