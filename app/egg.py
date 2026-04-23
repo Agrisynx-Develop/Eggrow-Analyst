@@ -879,30 +879,38 @@ elif menu == "Kesehatan":
        # return model, classes
     
     import os
-    import urllib.request
+    import gdown
     import tensorflow as tf
     import numpy as np
     import streamlit as st
     
-    MODEL_URL = "https://drive.google.com/uc?id=1_QSvdtEz_o8bFxCelgaxrCHQ2D52pHgH"
-    MODEL_PATH = "model/eggrow_vision_model.keras"
+    MODEL_URL = "https://drive.google.com/uc?id=1qxBNidiaX2zFzOSlFUn3eaC3bAYxiMLF"
+    MODEL_PATH = "model/eggrow_vision_model.h5"
     LABEL_PATH = "model/labels.npy"
+    
     
     def download_model():
         if not os.path.exists(MODEL_PATH):
             os.makedirs("model", exist_ok=True)
+    
             st.write("⬇️ Downloading model...")
-            urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
-            st.write("✅ Model downloaded!")
+            gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+    
+            st.write("✅ Download selesai")
+            st.write("Ukuran file:", os.path.getsize(MODEL_PATH))
+    
     
     @st.cache_resource
     def load_model_dl():
         download_model()
+    
+        st.write("📦 Loading model...")
         model = tf.keras.models.load_model(MODEL_PATH, compile=False)
+    
         classes = np.load(LABEL_PATH)
         return model, classes
     
-    
+       
     # LOAD SEKALI
     model_dl, class_names = load_model_dl()    
     # =========================
