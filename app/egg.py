@@ -943,7 +943,8 @@ elif menu == "Kesehatan":
                 🐔 Prediksi:
                 **{penyakit}**
                 Confidence: {confidence*100:.2f}%
-                """)    # =========================
+                """)   
+                # =========================
     # TAB 3 → COMBINE
     # =========================
     with tab3:
