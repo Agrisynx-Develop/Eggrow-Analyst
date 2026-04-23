@@ -1,17 +1,31 @@
-streamlit==1.36.0
+streamlit==1.32.0
+
+# Core data
+numpy==1.24.3
+pandas==2.1.4
+
+# Machine Learning
+scikit-learn==1.3.2
+scipy==1.11.4
+
+# Visualization (pilih ini saja, sudah cukup)
+plotly==5.18.0
+matplotlib==3.8.2
+seaborn==0.13.2
+
+# Deep Learning (load model .keras)
 tensorflow==2.15.0
 keras==2.15.0
-numpy==1.24.3
-pandas==1.5.3
-scikit-learn==1.2.2
-opencv-python-headless==4.8.0.76
-pillow==9.5.0
-h5py==3.9.0
-protobuf==4.25.3
-google-generativeai==0.8.3
-reportlab==4.0.9
-matplotlib==3.7.1
-seaborn==0.12.2
 
-gdown==5.1.0
+# Image processing
+opencv-python-headless==4.9.0.80
+Pillow==10.2.0
 
+# QR / Barcode
+pyzbar==0.1.9
+
+# PDF
+reportlab==4.0.8
+
+# Gemini AI
+google-generativeai==0.3.2
