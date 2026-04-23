@@ -869,7 +869,7 @@ elif menu == "Kesehatan":
            # model = tf.keras.models.load_model(
           #      model_path,
          #       compile=False
-            )
+           # )
         #except Exception as e:
           #  st.error(f"❌ ERROR LOAD MODEL: {e}")
          #   st.stop()
