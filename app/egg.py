@@ -833,34 +833,13 @@ elif menu == "Kesehatan":
             except:
                 st.error("AI tidak tersedia")
     
+
     @st.cache_resource
     def load_model_and_labels():
-        import os
-        import gdown
-        import numpy as np
-        from keras.models import load_model
+        model = load_model("model/model.keras")
+        labels = np.load("model/labels.npy", allow_pickle=True)
+        return model, labels
     
-        model_id = "1WIqCLPXqLcTFBUcogXMmOMEQs-A0yjXM"
-        label_id = "1sd0Z_2vzY19U_2kn5J1UQ2jsIii7LQIC"
-    
-        model_path = "model.keras"
-        label_path = "labels.npy"
-    
-        # 🔥 FIX PALING PENTING
-        model_url = "https://drive.google.com/uc?export=download&id=1WIqCLPXqLcTFBUcogXMmOMEQs-A0yjXM"
-        label_url = "https://drive.google.com/uc?export=download&id=1sd0Z_2vzY19U_2kn5J1UQ2jsIii7LQIC"    
-        
-        if not os.path.exists(model_path):
-            gdown.download(model_url, model_path, quiet=False)
-    
-        if not os.path.exists(label_path):
-            gdown.download(label_url, label_path, quiet=False)
-    
-        model2 = load_model(model_path)
-        classes = np.load(label_path, allow_pickle=True)
-    
-        return model, labels    
-    # 🔥 load sekali
     model_dl, class_names = load_model_and_labels()
     # =========================
     # UI
