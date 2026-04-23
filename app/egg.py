@@ -885,6 +885,7 @@ elif menu == "Kesehatan":
         # =========================
         # UI STREAMLIT
         # =========================
+    with tab2 :
         st.title("🐔 Eggrow Vision - Deteksi Penyakit Ayam")
         
         uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg", "png"])
