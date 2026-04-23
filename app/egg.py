@@ -834,11 +834,12 @@ elif menu == "Kesehatan":
                 st.error("AI tidak tersedia")
     
 
-    @st.cache_resource
+    st.cache_resource
     def load_model_and_labels():
-        model = load_model("model/model.keras")
-        labels = np.load("model/labels.npy", allow_pickle=True)
-        return model, labels
+        model2 = load_model("model/model.keras")
+        classes = np.load("model/labels.npy", allow_pickle=True)
+        return model2, classes
+    model_dl, class_names = load_model_and_labels()
     # =========================
     # UI
     # =========================
