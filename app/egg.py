@@ -843,39 +843,39 @@ elif menu == "Kesehatan":
 
         @st.cache_resource
         def load_model_dl():
-                BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+            BASE_DIR = os.path.dirname(os.path.abspath(__file__))
             
-                model_path = os.path.join(BASE_DIR, "..", "model", "clean_model.keras")
-                label_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
+            model_path = os.path.join(BASE_DIR, "..", "model", "clean_model.keras")
+            label_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
             
                 # VALIDASI FILE
-                if not os.path.exists(model_path):
-                    st.error(f"❌ Model tidak ditemukan: {model_path}")
-                    st.stop()
+            if not os.path.exists(model_path):
+                st.error(f"❌ Model tidak ditemukan: {model_path}")
+                st.stop()
             
-                if not os.path.exists(label_path):
-                    st.error(f"❌ Label tidak ditemukan: {label_path}")
-                    st.stop()
+            if not os.path.exists(label_path):
+                st.error(f"❌ Label tidak ditemukan: {label_path}")
+                st.stop()
             
                 # LOAD MODEL (SAFE)
-                try:
-                    model = tf.keras.models.load_model(
-                        model_path,
-                        compile=False,
-                        safe_mode=False
-                    )
-                except Exception as e:
-                    st.error(f"❌ Gagal load model: {e}")
-                    st.stop()
+            try:
+                model = tf.keras.models.load_model(
+                    model_path,
+                    compile=False,
+                    safe_mode=False
+                )
+            except Exception as e:
+                st.error(f"❌ Gagal load model: {e}")
+                st.stop()
             
                 # LOAD LABEL
-                try:
-                    classes = np.load(label_path)
-                except Exception as e:
-                    st.error(f"❌ Gagal load label: {e}")
-                    st.stop()
+            try:
+                classes = np.load(label_path)
+            except Exception as e:
+                st.error(f"❌ Gagal load label: {e}")
+                st.stop()
             
-                return model, classes
+            return model, classes
             
             
             # LOAD SEKALI SAJA
