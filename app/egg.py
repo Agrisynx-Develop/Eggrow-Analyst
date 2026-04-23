@@ -57,6 +57,15 @@ HDP_ALERT = 85
 FCR_OPTIMAL = (1.9, 2.2)
 FCR_ALERT = 2.3
 
+
+np.set_printoptions(suppress=True)
+
+
+model_dl = load_model("eggrow.h5", compile=False)
+
+class_names = open("labels.npy", "r").readlines()
+
+
 # =====================================================
 # HELPER FUNCTION
 # =====================================================
