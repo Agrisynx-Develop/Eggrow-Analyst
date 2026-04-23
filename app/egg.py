@@ -847,8 +847,8 @@ elif menu == "Kesehatan":
         label_path = "labels.npy"
     
         # 🔥 FIX PALING PENTING
-        model_url = f"https://drive.google.com/uc?export=download&id={model_id}"
-        label_url = f"https://drive.google.com/uc?export=download&id={label_id}"
+        model_url = "https://drive.google.com/uc?export=download&id=1WIqCLPXqLcTFBUcogXMmOMEQs-A0yjXM"
+        label_url = "https://drive.google.com/uc?export=download&id=1sd0Z_2vzY19U_2kn5J1UQ2jsIii7LQIC"
     
         if not os.path.exists(model_path):
             gdown.download(model_url, model_path, quiet=False)
