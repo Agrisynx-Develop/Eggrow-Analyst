@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 import io
+import gdown
 import matplotlib.pyplot as plt
 import plotly.express as px
 import seaborn as sns
@@ -828,15 +829,40 @@ elif menu == "Kesehatan":
                 st.write(res.text)
             except:
                 st.error("AI tidak tersedia")
-
+    
     @st.cache_resource
-    def load_model_dl():
-        model1 = load_model("../model/eggrow_vision_model.keras")
-        classes = np.load("../model/labels.npy")
-        return model1, classes
-
-    model_dl, class_names = load_model_dl()
-
+    def load_model_and_labels():
+        # =========================
+        # FILE ID (punya kamu)
+        # =========================
+        model_id = "1WIqCLPXqLcTFBUcogXMmOMEQs-A0yjXM"
+        label_id = "1sd0Z_2vzY19U_2kn5J1UQ2jsIii7LQIC"
+    
+        model_url = f"https://drive.google.com/uc?id={model_id}"
+        label_url = f"https://drive.google.com/uc?id={label_id}"
+    
+        model_path = "model.keras"
+        label_path = "labels.npy"
+    
+        # =========================
+        # DOWNLOAD SEKALI SAJA
+        # =========================
+        if not os.path.exists(model_path):
+            gdown.download(model_url, model_path, quiet=False)
+    
+        if not os.path.exists(label_path):
+            gdown.download(label_url, label_path, quiet=False)
+    
+        # =========================
+        # LOAD
+        # =========================
+        model = load_model(model_path)
+        labels = np.load(label_path, allow_pickle=True)
+    
+        return model, labels
+    
+    # 🔥 load sekali
+    model_dl, class_names = load_model_and_labels()
     # =========================
     # UI
     # =========================
