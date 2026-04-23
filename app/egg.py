@@ -839,8 +839,6 @@ elif menu == "Kesehatan":
         model = load_model("model/model.keras")
         labels = np.load("model/labels.npy", allow_pickle=True)
         return model, labels
-    
-    model_dl, class_names = load_model_and_labels()
     # =========================
     # UI
     # =========================
