@@ -850,50 +850,31 @@ elif menu == "Kesehatan":
         st.header("📷 Eggrow Vision (Deep Learning)")
 
         uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
-        model_dl, class_names = load_model_and_labels()
 
         if uploaded_img:
-            ...
-        
+            file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
+            img = cv2.imdecode(file_bytes, 1)
+
+            img_resized = cv2.resize(img, (128, 128))
+            img_norm = img_resized / 255.0
+            img_input = np.expand_dims(img_norm, axis=0)
+
+            st.image(img_resized, channels="BGR")
+
             if st.button("🔍 Analisis AI Vision"):
-        
-                if model_dl is None:
-                    st.error("Model gagal load, cek file model")
-                else:
-                    pred = model_dl.predict(img_input)
-                    idx = np.argmax(pred)
-                    confidence = float(np.max(pred))
-        
-                    penyakit = class_names[idx]
-        
-                    vision_results = st.success(f"""
-                    🐔 Prediksi:
-                    **{penyakit}**
-                    Confidence: {confidence*100:.2f}% 
-                    """)
-       # if uploaded_img:
-            #file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
-            #img = cv2.imdecode(file_bytes, 1)
 
-            #img_resized = cv2.resize(img, (128, 128))
-            #img_norm = img_resized / 255.0
-            #img_input = np.expand_dims(img_norm, axis=0)
+                pred = model1.predict(img_input)
+                idx = np.argmax(pred)
+                confidence = float(np.max(pred))
 
-            #st.image(img_resized, channels="BGR")
+                penyakit = class_names[idx]
 
-            #if st.button("🔍 Analisis AI Vision"):
-
-                #pred = model_dl.predict(img_input)
-                #idx = np.argmax(pred)
-                #confidence = float(np.max(pred))
-
-                #penyakit = class_names[idx]
-
-                #vision_results = st.success(f"""
-                #🐔 Prediksi:
-                #**{penyakit}**
-                #Confidence: {confidence*100:.2f}%
-                #""")
+                vision_results = st.success(f"""
+                🐔 Prediksi:
+                **{penyakit}**
+                Confidence: {confidence*100:.2f}%
+                """)
+                
                 st.session_state["vision_results"] = {
                     class_names[i]: float(pred[0][i])
                     for i in range(len(class_names))
