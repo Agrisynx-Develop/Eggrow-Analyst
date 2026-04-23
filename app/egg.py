@@ -890,29 +890,29 @@ elif menu == "Kesehatan":
     
     
     def download_model():
-        if not os.path.exists(MODEL_PATH):
-            os.makedirs("model", exist_ok=True)
+        if os.path.exists(MODEL_PATH):
+            os.remove(MODEL_PATH)  # 🔥 force download ulang
     
-            st.write("⬇️ Downloading model...")
-            gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+        os.makedirs("model", exist_ok=True)
     
-            st.write("✅ Download selesai")
-            st.write("Ukuran file:", os.path.getsize(MODEL_PATH))
+        st.write("⬇️ Downloading model...")
+        gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+    
+        st.write("✅ Done")
+        st.write("Size:", os.path.getsize(MODEL_PATH))
     
     
     @st.cache_resource
     def load_model_dl():
         download_model()
     
-        st.write("📦 Loading model...")
         model = tf.keras.models.load_model(MODEL_PATH, compile=False)
-    
         classes = np.load(LABEL_PATH)
+    
         return model, classes
     
-       
-    # LOAD SEKALI
-    model_dl, class_names = load_model_dl()    
+    
+    model_dl, class_names = load_model_dl()   
     # =========================
     # UI
     # =========================
