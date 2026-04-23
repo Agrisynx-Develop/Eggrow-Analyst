@@ -7,12 +7,10 @@ import tensorflow as tf
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
-from keras.applications import MobileNetV2
-from keras.models import Sequential
-from keras.layers import Dense, Flatten, BatchNormalization
-from keras.optimizers import Adam
-
-
+from tensorflow.keras.applications import MobileNetV2
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, BatchNormalization, Flatten
+from tensorflow.keras.optimizers import Adam
 # ======================
 # PATH SETUP
 # ======================
