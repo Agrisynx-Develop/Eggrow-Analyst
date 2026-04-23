@@ -834,12 +834,7 @@ elif menu == "Kesehatan":
                 st.error("AI tidak tersedia")
     
 
-    import os
-    import gdown
-    import streamlit as st
-    from tensorflow.keras.models import load_model
-    import numpy as np
-    
+ 
     MODEL_PATH = "model/eggrow_vision_model.keras"
     
     @st.cache_resource
@@ -850,12 +845,10 @@ elif menu == "Kesehatan":
             url = "https://huggingface.co/Agrisynx-Develop/eggrow-model/blob/main/eggrow_vision_model.keras"
             gdown.download(url, MODEL_PATH, quiet=False)
     
-        model = load_model(MODEL_PATH)
+        model2 = load_model(MODEL_PATH)
         classes = np.load("model/labels.npy", allow_pickle=True)
         
         return model, classes
-    
-    model_dl, class_names = load_model_and_labels()
     
     # =========================
     # VALIDASI LOAD
