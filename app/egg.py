@@ -880,8 +880,8 @@ elif menu == "Kesehatan":
     
     @st.cache_resource
     def load_model_dl():
-        model = load_model("../model/eggrow_vision_model.h5")
-        classes = np.load("../model/labels.npy")
+        model = load_model("model/eggrow_vision_model.keras")
+        classes = np.load("model/labels.npy")
         return model, classes
     
     # LOAD SEKALI
