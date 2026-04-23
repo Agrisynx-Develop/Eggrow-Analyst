@@ -98,7 +98,7 @@ if "menu" not in st.session_state:
 
 menu = st.sidebar.selectbox(
     "Menu",
-    ["Dashboard", "Analisis Prediksi", "Nutrisi", "Kesehatan", "Summary"]
+    ["Dashboard", "Analisis Prediksi", "Nutrisi", "Kesehatan", "Summary"],
     key="menu"
 )
 
