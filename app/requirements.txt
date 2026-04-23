@@ -16,3 +16,4 @@ protobuf==3.20.3
 h5py==3.9.0
 
 google-generativeai==0.8.3
+gdown
