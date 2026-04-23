@@ -688,9 +688,10 @@ elif menu == "Kesehatan":
     # ==============================
     @st.cache_data
     def load_data():
-        df_gejala = pd.read_csv("../Data/gejala_cf.csv")
-        df_tanya = pd.read_csv("../Data/pertanyaan.csv")
-        df_penyakit = pd.read_csv("../Data/relasi_penyakit.csv")
+        DATA_DIR = os.path.join(BASE_DIR, "..", "Data")
+        df_gejala = pd.read_csv(os.path.join(DATA_DIR, "gejala_cf.csv"))
+        df_tanya = pd.read_csv(os.path.join(DATA_DIR, "pertanyaan.csv"))
+        df_penyakit = pd.read_csv(os.path.join(DATA_DIR, "relasi_penyakit.csv"))
         return df_gejala, df_tanya, df_penyakit
 
     df_gejala, df_tanya, df_penyakit = load_data()
