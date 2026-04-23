@@ -866,7 +866,7 @@ elif menu == "Kesehatan":
         
                     penyakit = class_names[idx]
         
-                    st.success(f"""
+                    vision_results = st.success(f"""
                     🐔 Prediksi:
                     **{penyakit}**
                     Confidence: {confidence*100:.2f}% 
