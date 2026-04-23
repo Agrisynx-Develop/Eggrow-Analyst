@@ -848,8 +848,8 @@ elif menu == "Kesehatan":
     
         # 🔥 FIX PALING PENTING
         model_url = "https://drive.google.com/uc?export=download&id=1WIqCLPXqLcTFBUcogXMmOMEQs-A0yjXM"
-        label_url = "https://drive.google.com/uc?export=download&id=1sd0Z_2vzY19U_2kn5J1UQ2jsIii7LQIC"
-    
+        label_url = "https://drive.google.com/uc?export=download&id=1sd0Z_2vzY19U_2kn5J1UQ2jsIii7LQIC"    
+        
         if not os.path.exists(model_path):
             gdown.download(model_url, model_path, quiet=False)
     
