@@ -835,57 +835,79 @@ elif menu == "Kesehatan":
     
 
     MODEL_PATH = "model/eggrow_vision_model.keras"
-
-        # buat folder kalau belum ada
+    LABEL_PATH = "model/labels.npy"
+    
+    MODEL_URL = "https://drive.google.com/uc?id=1WIqCLPXqLcTFBUcogXMmOMEQs-A0yjXM"
+    LABEL_URL = "https://drive.google.com/uc?id=1sd0Z_2vzY19U_2kn5J1UQ2jsIii7LQIC"
+    
+    # =========================
+    # DOWNLOAD FILE JIKA BELUM ADA
+    # =========================
     os.makedirs("model", exist_ok=True)
-        
-        # download model jika belum ada
-        if not os.path.exists(MODEL_PATH):
-            url = "https://drive.google.com/uc?id=1WIqCLPXqLcTFBUcogXMmOMEQs-A0yjXM"
-            gdown.download(url, MODEL_PATH, quiet=False)
-            classes = np.load("model/labels.npy", allow_pickle=True)
+    
+    if not os.path.exists(MODEL_PATH):
+        with st.spinner("📥 Download model..."):
+            gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+    
+    if not os.path.exists(LABEL_PATH):
+        with st.spinner("📥 Download label..."):
+            gdown.download(LABEL_URL, LABEL_PATH, quiet=False)
+    
+    # =========================
+    # LOAD MODEL (CACHE)
+    # =========================
+    @st.cache_resource
+    def load_model_and_labels():
+        try:
+            model = load_model(MODEL_PATH, compile=False)
+            classes = np.load(LABEL_PATH, allow_pickle=True)
             return model, classes
         except Exception as e:
             return None, str(e)
     
     model_dl, class_names = load_model_and_labels()
     
+    # =========================
+    # VALIDASI LOAD
+    # =========================
     if model_dl is None:
-        st.error(f"Error load model: {class_names}")
-        st.stop()    
-        
-    with tab2:
-        st.header("📷 Eggrow Vision (Deep Learning)")
-
-        uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
-
-        if uploaded_img:
-            file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
-            img = cv2.imdecode(file_bytes, 1)
-
-            img_resized = cv2.resize(img, (128, 128))
-            img_norm = img_resized / 255.0
-            img_input = np.expand_dims(img_norm, axis=0)
-
-            st.image(img_resized, channels="BGR")
-
-            if st.button("🔍 Analisis AI Vision"):
-
-                pred = model_dl.predict(img_input)
-                idx = np.argmax(pred)
-                confidence = float(np.max(pred))
-
-                penyakit = class_names[idx]
-
-                vision_results = st.success(f"""
-                🐔 Prediksi:
-                **{penyakit}**
-                Confidence: {confidence*100:.2f}% 
-                """)
-                st.session_state["vision_results"] = {
-                    class_names[i]: float(pred[0][i])
-                    for i in range(len(class_names))
-                }
+        st.error(f"❌ Gagal load model: {class_names}")
+        st.stop()
+    else:
+        st.success("✅ Model siap digunakan")  
+            
+        with tab2:
+            st.header("📷 Eggrow Vision (Deep Learning)")
+    
+            uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
+    
+            if uploaded_img:
+                file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
+                img = cv2.imdecode(file_bytes, 1)
+    
+                img_resized = cv2.resize(img, (128, 128))
+                img_norm = img_resized / 255.0
+                img_input = np.expand_dims(img_norm, axis=0)
+    
+                st.image(img_resized, channels="BGR")
+    
+                if st.button("🔍 Analisis AI Vision"):
+    
+                    pred = model_dl.predict(img_input)
+                    idx = np.argmax(pred)
+                    confidence = float(np.max(pred))
+    
+                    penyakit = class_names[idx]
+    
+                    vision_results = st.success(f"""
+                    🐔 Prediksi:
+                    **{penyakit}**
+                    Confidence: {confidence*100:.2f}% 
+                    """)
+                    st.session_state["vision_results"] = {
+                        class_names[i]: float(pred[0][i])
+                        for i in range(len(class_names))
+                    }
     # =========================
     # TAB 3 → COMBINE
     # =========================
