@@ -842,15 +842,29 @@ elif menu == "Kesehatan":
             except:
                 st.error("AI tidak tersedia")
                 
-    @st.cache_data           
-    def load_model_dl():
-        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    
-        model_dl = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
-        class_names = os.path.join(BASE_DIR, "..", "model", "labels.npy")
+    @st.cache_resource
+    def load_models():
+        import traceback  # Import traceback inside the function
+        model_path = "eggrow.h5"  # Define model path
+        labels_path = "labels.npy"  # Path to labels file
         
-        model1 = load_model(model_dl)
-        classes = np.load(class_names)
+        # Load the class labels
+        try:
+            with open(labels_path, 'r') as f:
+                class_labels = [line.strip() for line in f.readlines()]
+            st.write(f"Loaded {len(class_labels)} class labels")
+        except Exception as e:
+            st.error(f"Error loading labels: {e}")
+            class_labels = ["Class 1", "Class 2", "Class 3", "Class 4"]
+   # @st.cache_data           
+    #def load_model_dl():
+     #   BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    
+      #  model1 = os.path.join(BASE_DIR,"eggrow_vision_model.keras")
+       # class_names = os.path.join(BASE_DIR, "labels.npy")
+        
+        #model_dl = load_model(model1)
+        #classes = np.load(class_names)
      
    # @st.cache_resource
     #def load_model_dl():
@@ -858,7 +872,7 @@ elif menu == "Kesehatan":
       #  classes = np.load("../model/labels.npy")
        # return model1, classes
 
-    model_dl, class_names = load_model_dl()
+    model_dl, class_names = load_models()
 
     # =========================
     # UI
