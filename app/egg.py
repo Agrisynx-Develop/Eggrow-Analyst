@@ -846,18 +846,18 @@ elif menu == "Kesehatan":
         model_path = "model.keras"
         label_path = "labels.npy"
     
-        model_url = f"https://drive.google.com/uc?id={model_id}"
-        label_url = f"https://drive.google.com/uc?id={label_id}"
+        # 🔥 FIX PALING PENTING
+        model_url = f"https://drive.google.com/uc?export=download&id={model_id}"
+        label_url = f"https://drive.google.com/uc?export=download&id={label_id}"
     
-        # download hanya jika belum ada
         if not os.path.exists(model_path):
             gdown.download(model_url, model_path, quiet=False)
     
         if not os.path.exists(label_path):
             gdown.download(label_url, label_path, quiet=False)
     
-        model = load_model(model_path)
-        labels = np.load(label_path, allow_pickle=True)
+        model2 = load_model(model_path)
+        classes = np.load(label_path, allow_pickle=True)
     
         return model, labels    
     # 🔥 load sekali
