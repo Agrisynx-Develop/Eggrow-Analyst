@@ -840,8 +840,6 @@ elif menu == "Kesehatan":
         model1 = load_model("../model/eggrow_vision_model.keras")
         classes = np.load("../model/labels.npy")
         return model1, classes
-
-    model_dl, class_names = load_model_dl()
     
     # =========================
     # VALIDASI LOAD
