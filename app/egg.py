@@ -843,7 +843,7 @@ elif menu == "Kesehatan":
 
     @st.cache_resource
     def load_model_dl():
-        model = load_model("../model/eggrow_vision_model.h5")
+        model = load_model("../model/eggrow_vision_model.keras")
         classes = np.load("../model/labels.npy")
         return model, classes
 
