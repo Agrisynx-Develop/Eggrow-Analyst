@@ -9,7 +9,7 @@ grpcio==1.80.0
 h5py==3.14.0
 idna==3.12
 joblib==1.5.3
-keras==3.14.0
+keras==2.15.0
 libclang==18.1.1
 markdown-it-py==4.0.0
 mdurl==0.1.2
