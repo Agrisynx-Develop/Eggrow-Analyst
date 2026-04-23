@@ -835,20 +835,13 @@ elif menu == "Kesehatan":
     
 
  
-    MODEL_PATH = "model/eggrow_vision_model.keras"
-    
     @st.cache_resource
-    def load_model_and_labels():
-        if not os.path.exists(MODEL_PATH):
-            os.makedirs("model", exist_ok=True)
-            
-            url = "https://huggingface.co/Agrisynx-Develop/eggrow-model/blob/main/eggrow_vision_model.keras"
-            gdown.download(url, MODEL_PATH, quiet=False)
-    
-        model2 = load_model(MODEL_PATH)
-        classes = np.load("model/labels.npy", allow_pickle=True)
-        
-        return model, classes
+    def load_model_dl():
+        model1 = load_model("../model/eggrow_vision_model.keras")
+        classes = np.load("../model/labels.npy")
+        return model1, classes
+
+    model_dl, class_names = load_model_dl()
     
     # =========================
     # VALIDASI LOAD
