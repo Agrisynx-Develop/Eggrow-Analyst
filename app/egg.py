@@ -834,13 +834,18 @@ elif menu == "Kesehatan":
                 st.error("AI tidak tersedia")
     
 
-    @st.cache_resource
-    def load_model_and_labels():
-        try:
-            model = load_model("model/eggrow_vision_model.keras", compile=False)
+    MODEL_PATH = "model/eggrow_vision_model.keras"
+
+        # buat folder kalau belum ada
+    os.makedirs("model", exist_ok=True)
+        
+        # download model jika belum ada
+    if not os.path.exists(MODEL_PATH):
+            url = "https://drive.google.com/uc?id=1WIqCLPXqLcTFBUcogXMmOMEQs-A0yjXM"
+            gdown.download(url, MODEL_PATH, quiet=False)
             classes = np.load("model/labels.npy", allow_pickle=True)
             return model, classes
-        except Exception as e:
+    except Exception as e:
             return None, str(e)
     
     model_dl, class_names = load_model_and_labels()
