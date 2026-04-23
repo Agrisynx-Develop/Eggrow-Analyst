@@ -843,12 +843,31 @@ elif menu == "Kesehatan":
 
     @st.cache_resource
     def load_model_dl():
-        model = load_model("../model/clean_model.h5")
-        classes = np.load("../model/labels.npy")
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    
+        model_path = os.path.join(BASE_DIR, "..", "model", "clean_model.keras")
+        label_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
+    
+        if not os.path.exists(model_path):
+            st.error(f"❌ Model tidak ditemukan: {model_path}")
+            st.stop()
+    
+        if not os.path.exists(label_path):
+            st.error(f"❌ Label tidak ditemukan: {label_path}")
+            st.stop()
+    
+        model = tf.keras.models.load_model(
+            model_path,
+            compile=False,
+            safe_mode=False
+        )
+    
+        classes = np.load(label_path)
+    
         return model, classes
-
+    
+    
     model_dl, class_names = load_model_dl()
-
     # =========================
     # UI
     # =========================
