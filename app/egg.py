@@ -834,36 +834,26 @@ elif menu == "Kesehatan":
                 st.error("AI tidak tersedia")
     
 
+    import os
+    import gdown
+    import streamlit as st
+    from tensorflow.keras.models import load_model
+    import numpy as np
+    
     MODEL_PATH = "model/eggrow_vision_model.keras"
-    LABEL_PATH = "model/labels.npy"
     
-    MODEL_URL = "https://drive.google.com/uc?id=1WIqCLPXqLcTFBUcogXMmOMEQs-A0yjXM"
-    LABEL_URL = "https://drive.google.com/uc?id=1sd0Z_2vzY19U_2kn5J1UQ2jsIii7LQIC"
-    
-    # =========================
-    # DOWNLOAD FILE JIKA BELUM ADA
-    # =========================
-    os.makedirs("model", exist_ok=True)
-    
-    if not os.path.exists(MODEL_PATH):
-        with st.spinner("📥 Download model..."):
-            gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
-    
-    if not os.path.exists(LABEL_PATH):
-        with st.spinner("📥 Download label..."):
-            gdown.download(LABEL_URL, LABEL_PATH, quiet=False)
-    
-    # =========================
-    # LOAD MODEL (CACHE)
-    # =========================
     @st.cache_resource
     def load_model_and_labels():
-        try:
-            model = load_model(MODEL_PATH, compile=False)
-            classes = np.load(LABEL_PATH, allow_pickle=True)
-            return model, classes
-        except Exception as e:
-            return None, str(e)
+        if not os.path.exists(MODEL_PATH):
+            os.makedirs("model", exist_ok=True)
+            
+            url = "https://huggingface.co/Agrisynx-Develop/eggrow-model/blob/main/eggrow_vision_model.keras"
+            gdown.download(url, MODEL_PATH, quiet=False)
+    
+        model = load_model(MODEL_PATH)
+        classes = np.load("model/labels.npy", allow_pickle=True)
+        
+        return model, classes
     
     model_dl, class_names = load_model_and_labels()
     
