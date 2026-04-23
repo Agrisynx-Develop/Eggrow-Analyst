@@ -29,3 +29,5 @@ reportlab==4.0.8
 
 # Gemini AI
 google-generativeai==0.3.2
+
+gdown==4.7.1
