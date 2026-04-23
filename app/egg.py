@@ -854,7 +854,7 @@ elif menu == "Kesehatan":
     def load_model_dl():
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
-        model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.keras")
+        model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
         label_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
     
         st.write("MODEL PATH:", model_path)
@@ -868,8 +868,7 @@ elif menu == "Kesehatan":
         try:
             model = tf.keras.models.load_model(
                 model_path,
-                compile=False,
-                safe_mode=False   # 🔥 INI KUNCI
+                compile=False
             )
         except Exception as e:
             st.error(f"❌ ERROR LOAD MODEL: {e}")
