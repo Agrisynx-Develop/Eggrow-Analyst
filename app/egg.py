@@ -841,7 +841,7 @@ elif menu == "Kesehatan":
         classes = np.load("../model/labels.npy")
         return model1, classes
 
-    model_dl, class_names = load_model_dl()
+    #model_dl, class_names = load_model_dl()
 
     # =========================
     # UI
