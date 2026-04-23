@@ -845,7 +845,7 @@ elif menu == "Kesehatan":
     def load_model_dl():
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
-        model_path = os.path.join(BASE_DIR, "..", "model", "clean_model.keras")
+        model_path = os.path.join(BASE_DIR, "..", "model", "clean_model.h5")
         label_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
     
         if not os.path.exists(model_path):
