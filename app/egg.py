@@ -870,7 +870,7 @@ elif menu == "Kesehatan":
                 vision_results = st.success(f"""
                 🐔 Prediksi:
                 **{penyakit}**
-                Confidence: {confidence*100:.2f}%
+                Confidence: {confidence*100:.2f}% 
                 """)
                 st.session_state["vision_results"] = {
                     class_names[i]: float(pred[0][i])
