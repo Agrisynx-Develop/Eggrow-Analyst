@@ -844,6 +844,9 @@ elif menu == "Kesehatan":
     # =========================
     # UI
     # =========================
+    model_dl = load_model_and_labels()
+    class_names = load_model_and_labels()
+    
     with tab2:
         st.header("📷 Eggrow Vision (Deep Learning)")
 
