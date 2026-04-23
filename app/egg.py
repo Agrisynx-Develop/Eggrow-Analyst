@@ -842,57 +842,92 @@ elif menu == "Kesehatan":
                 st.error("AI tidak tersedia")
 
         @st.cache_resource
-        def load_data_dl():
+        def load_model_dl():
             BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-                
-            model_path = os.path.join(BASE_DIR, "..", "model", "eggrow_vision_model.h5")
-            class_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
-                
-                    # DEBUG (biar tahu errornya dimana kalau gagal)
-            st.write("📂 MODEL PATH:", model_path)
-            st.write("📂 EXISTS:", os.path.exists(model_path))
-            st.write("📂 FILES:", os.listdir(os.path.join(BASE_DIR, "..", "model")))
-                
-            model = tf.keras.models.load_model(model_path, compile=False)
-            classes = np.load(class_path)
-                
-            return model, classes
-                
-                
-        model_dl, class_dl = load_data_dl()          
-        # =========================
-        # UI
-        # =========================
-        with tab2:
-            st.header("📷 Eggrow Vision (Deep Learning)")
-    
-            uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
-            
         
-            if uploaded_img:
+            model_path = os.path.join(BASE_DIR, "..", "model", "clean_model.keras")
+            label_path = os.path.join(BASE_DIR, "..", "model", "labels.npy")
+        
+            # VALIDASI FILE
+            if not os.path.exists(model_path):
+                st.error(f"❌ Model tidak ditemukan: {model_path}")
+                st.stop()
+        
+            if not os.path.exists(label_path):
+                st.error(f"❌ Label tidak ditemukan: {label_path}")
+                st.stop()
+        
+            # LOAD MODEL (SAFE)
+            try:
+                model = tf.keras.models.load_model(
+                    model_path,
+                    compile=False,
+                    safe_mode=False
+                )
+            except Exception as e:
+                st.error(f"❌ Gagal load model: {e}")
+                st.stop()
+        
+            # LOAD LABEL
+            try:
+                classes = np.load(label_path)
+            except Exception as e:
+                st.error(f"❌ Gagal load label: {e}")
+                st.stop()
+        
+            return model, classes
+        
+        
+        # LOAD SEKALI SAJA
+        model_dl, class_names = load_model_dl()
+        
+        
+        # =========================
+        # UI STREAMLIT
+        # =========================
+        st.title("🐔 Eggrow Vision - Deteksi Penyakit Ayam")
+        
+        uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg", "png"])
+        
+        
+        if uploaded_img is not None:
+            try:
                 file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
                 img = cv2.imdecode(file_bytes, 1)
-    
+        
+                if img is None:
+                    st.error("❌ Gambar tidak valid")
+                    st.stop()
+        
                 img_resized = cv2.resize(img, (128, 128))
                 img_norm = img_resized / 255.0
                 img_input = np.expand_dims(img_norm, axis=0)
-    
-                st.image(img_resized, channels="BGR")
-    
-                if st.button("🔍 Analisis AI Vision"):
-            
+        
+                st.image(img_resized, channels="BGR", caption="Gambar Input")
+        
+            except Exception as e:
+                st.error(f"❌ Error preprocessing: {e}")
+                st.stop()
+        
+        
+            if st.button("🔍 Analisis AI Vision"):
+                try:
                     pred = model_dl.predict(img_input)
-                    idx = np.argmax(pred)
+        
+                    idx = int(np.argmax(pred))
                     confidence = float(np.max(pred))
-    
+        
                     penyakit = class_names[idx]
-    
+        
                     st.success(f"""
                     🐔 Prediksi:
                     **{penyakit}**
-                    Confidence: {confidence*100:.2f}%
+        
+                    🎯 Confidence: {confidence*100:.2f}%
                     """)
-
+        
+                except Exception as e:
+                    st.error(f"❌ Error prediksi: {e}")
 
     # =========================
     # TAB 3 → COMBINE
