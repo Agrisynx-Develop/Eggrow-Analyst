@@ -838,18 +838,31 @@ elif menu == "Kesehatan":
     
     @st.cache_resource
     def load_model_dl():
-        #download_model()
     
+        # DEBUG (WAJIB BIAR TAHU ERROR)
+        st.write("Model exists:", os.path.exists(MODEL_PATH))
+    
+        if not os.path.exists(MODEL_PATH):
+            st.error("❌ Model tidak ditemukan di folder /model")
+            st.stop()
+    
+        st.write("Model size:", os.path.getsize(MODEL_PATH))
+    
+        # LOAD TFLITE
         interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
         interpreter.allocate_tensors()
     
         input_details = interpreter.get_input_details()
         output_details = interpreter.get_output_details()
     
-        classes = np.load(LABEL_PATH)
+        # LOAD LABEL
+        if not os.path.exists(LABEL_PATH):
+            st.error("❌ labels.npy tidak ditemukan")
+            st.stop()
     
-        return interpreter, input_details, output_details, classes
+        class_names = np.load(LABEL_PATH)
     
+        return interpreter, input_details, output_details, class_names
     # =========================
     # PREPROCESS IMAGE
     # =========================
@@ -889,23 +902,18 @@ elif menu == "Kesehatan":
     with tab2:
         st.header("📷 Eggrow Vision (Deep Learning)")
 
-        uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
-        if uploaded_img is not None:
-            image = Image.open(uploaded_img)
-            image = image.resize((128, 128))
+        uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg", "png"])
 
+        if uploaded_img is not None:
+            image = Image.open(uploaded_img).convert("RGB")
+        
             st.image(image, caption="Gambar input", use_container_width=True)
         
-            # ke numpy
-            img_array = np.array(image) / 255.0
-            img_array = np.expand_dims(img_array, axis=0)
-                
-            # load model
+            # LOAD MODEL
             interpreter, input_details, output_details, class_names = load_model_dl()
         
-            # preprocess
-            img_array = preprocess_image(image)
-        
+            # PREPROCESS
+            img_array = preprocess_image(image)        
             
         
 
