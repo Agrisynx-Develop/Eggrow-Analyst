@@ -57,15 +57,6 @@ HDP_ALERT = 85
 FCR_OPTIMAL = (1.9, 2.2)
 FCR_ALERT = 2.3
 
-
-np.set_printoptions(suppress=True)
-
-
-model_dl = load_model("eggrow.h5", compile=False)
-
-class_names = open("labels.npy", "r").readlines()
-
-
 # =====================================================
 # HELPER FUNCTION
 # =====================================================
@@ -842,14 +833,41 @@ elif menu == "Kesehatan":
             except:
                 st.error("AI tidak tersedia")
                 
+    MODEL_PATH = "model/eggrow_vision_model.h5"
+    LABEL_PATH = "model/labels.npy"
+    
+    # ganti dengan ID file kamu
+    MODEL_URL = "https://drive.google.com/uc?id=1_QSvdtEz_o8bFxCelgaxrCHQ2D52pHgH"
+    
+    # ===== DOWNLOAD MODEL =====
+    def download_model():
+        if not os.path.exists(MODEL_PATH):
+            os.makedirs("model", exist_ok=True)
+            st.info("⬇️ Downloading model...")
+            gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+            st.success("✅ Model downloaded")
+
+# ===== LOAD MODEL =====
     @st.cache_resource
     def load_model_dl():
-        model1 = load_model("eggrow.h5")
-        classes = np.load("labels.npy")
-        return model1, classes
-
+        download_model()
+    
+        st.write("Model exists:", os.path.exists(MODEL_PATH))
+        st.write("Model size:", os.path.getsize(MODEL_PATH) if os.path.exists(MODEL_PATH) else 0)
+    
+        model4 = tf.keras.models.load_model(
+            MODEL_PATH,
+            compile=False,
+            safe_mode=False
+        )
+    
+        classes = np.load(LABEL_PATH)
+        return model4, classes
+    
     model_dl, class_names = load_model_dl()
-
+    
+    st.title("EggRow - Smart Poultry Decision Support System")
+    st.success("Model berhasil dimuat ✅")
    # @st.cache_data           
     #def load_model_dl():
      #   BASE_DIR = os.path.dirname(os.path.abspath(__file__))
