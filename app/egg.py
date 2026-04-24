@@ -836,38 +836,37 @@ elif menu == "Kesehatan":
     MODEL_PATH = "model/model_float16.tflite"
     LABEL_PATH = "model/labels.npy"
     
-    # ganti dengan ID file kamu
-    #MODEL_URL = "https://drive.google.com/uc?id=1_QSvdtEz_o8bFxCelgaxrCHQ2D52pHgH"
-    
-    # ===== DOWNLOAD MODEL =====
-    #def download_model():
-     #   if not os.path.exists(MODEL_PATH):
-      #      os.makedirs("model", exist_ok=True)
-       #     st.info("⬇️ Downloading model...")
-        #    gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
-         #   st.success("✅ Model downloaded")
-
-# ===== LOAD MODEL =====
     @st.cache_resource
     def load_model_dl():
-       # download_model()
+        #download_model()
     
-        #st.write("Model exists:", os.path.exists(MODEL_PATH))
-        #st.write("Model size:", os.path.getsize(MODEL_PATH) if os.path.exists(MODEL_PATH) else 0)
+        interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
+        interpreter.allocate_tensors()
     
-        model = tf.keras.models.load_model(
-            MODEL_PATH,
-            compile=False,
-            safe_mode=False
-        )
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
     
         classes = np.load(LABEL_PATH)
-        return model, classes
     
-    model_dl, class_names = load_model_dl()
+        return interpreter, input_details, output_details, classes
     
-    st.title("EggRow - Smart Poultry Decision Support System")
-    st.success("Model berhasil dimuat ✅")
+    # =========================
+    # PREPROCESS IMAGE
+    # =========================
+    def preprocess_image(image):
+        image = image.resize((128, 128))  # samakan dengan training
+        image = np.array(image) / 255.0
+        image = np.expand_dims(image, axis=0).astype(np.float32)
+        return image
+    
+    # =========================
+    # PREDICT
+    # =========================
+    def predict_image(interpreter, input_details, output_details, img_array):
+        interpreter.set_tensor(input_details[0]['index'], img_array)
+        interpreter.invoke()
+        output = interpreter.get_tensor(output_details[0]['index'])
+        return output
    # @st.cache_data           
     #def load_model_dl():
      #   BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -891,7 +890,6 @@ elif menu == "Kesehatan":
         st.header("📷 Eggrow Vision (Deep Learning)")
 
         uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
-
         if uploaded_img:
             file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
             img = cv2.imdecode(file_bytes, 1)
@@ -901,18 +899,28 @@ elif menu == "Kesehatan":
             img_input = np.expand_dims(img_norm, axis=0)
 
             st.image(img_resized, channels="BGR")
+        elif uploaded_img is not None:
+            image = Image.open(uploaded_img)
+            st.image(image, caption="Gambar input", use_container_width=True)
+        
+            # load model
+            interpreter, input_details, output_details, class_names = load_model_dl()
+        
+            # preprocess
+            img_array = preprocess_image(image)
+        
+            
+        
 
             if st.button("🔍 Analisis AI Vision"):
 
-                pred = model_dl.predict(img_input)
-                idx = np.argmax(pred)
-                confidence = float(np.max(pred))
-
-                penyakit = class_names[idx]
+                preds = predict_image(interpreter, input_details, output_details, img_array)
+                pred_class = np.argmax(preds)
+                confidence = np.max(preds)
 
                 vision_results = st.success(f"""
                 🐔 Prediksi:
-                **{penyakit}**
+                **{class_names[pred_class]}**
                 Confidence: {confidence*100:.2f}%
                 """)
                 
