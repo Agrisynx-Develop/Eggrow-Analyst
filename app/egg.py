@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import seaborn as sns
 import google.generativeai as genai
+import tensorflow as tf
 
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
