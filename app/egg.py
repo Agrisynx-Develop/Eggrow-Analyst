@@ -892,12 +892,14 @@ elif menu == "Kesehatan":
         uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
         if uploaded_img is not None:
             image = Image.open(uploaded_img)
-            img_resized = cv2.resize(image, (128, 128))
-            img_norm = img_resized / 255.0
-            img_input = np.expand_dims(img_norm, axis=0)
+            image = image.resize((128, 128))
 
-            st.image(image_resize, caption="Gambar input", use_container_width=True)
+            st.image(image, caption="Gambar input", use_container_width=True)
         
+            # ke numpy
+            img_array = np.array(image) / 255.0
+            img_array = np.expand_dims(img_array, axis=0)
+                
             # load model
             interpreter, input_details, output_details, class_names = load_model_dl()
         
