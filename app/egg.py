@@ -850,10 +850,10 @@ elif menu == "Kesehatan":
 # ===== LOAD MODEL =====
     @st.cache_resource
     def load_model_dl():
-        download_model()
+       # download_model()
     
-        st.write("Model exists:", os.path.exists(MODEL_PATH))
-        st.write("Model size:", os.path.getsize(MODEL_PATH) if os.path.exists(MODEL_PATH) else 0)
+        #st.write("Model exists:", os.path.exists(MODEL_PATH))
+        #st.write("Model size:", os.path.getsize(MODEL_PATH) if os.path.exists(MODEL_PATH) else 0)
     
         model = tf.keras.models.load_model(
             MODEL_PATH,
