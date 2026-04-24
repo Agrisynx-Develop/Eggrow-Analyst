@@ -102,7 +102,7 @@ if menu == "Dashboard":
 
         fileMethod = st.radio(
             "Select data source:",
-            options=["Browse Files", "Seaborn Dataset"]
+            options=["Browse Files"]
         )
 
         df = None
