@@ -483,7 +483,7 @@ elif menu == "Analisis Prediksi":
 
             2. Analisis tiap variabel (koefisien):
             Untuk setiap variabel:
-            - Jelaskan apakah pengaruhnya positif atau negatif {x_cols, y_cols}
+            - Jelaskan apakah pengaruhnya positif atau negatif terhadap {y_cols}
             - Jelaskan arti besarnya koefisien terhadap {y_cols}
             - Apakah masuk akal secara bisnis
             - Jika tidak masuk akal, jelaskan kemungkinan penyebab (misalnya korelasi, data bias, dll)
