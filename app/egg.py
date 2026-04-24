@@ -931,7 +931,7 @@ elif menu == "Kesehatan":
                 """)
                 
                 st.session_state["vision_results"] = {
-                    class_names[i]: float(pred[0][i])
+                    class_names[i]: float(preds[0][i])
                     for i in range(len(class_names))
                 }
     # =========================
