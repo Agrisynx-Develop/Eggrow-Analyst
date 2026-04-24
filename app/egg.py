@@ -469,6 +469,9 @@ elif menu == "Analisis Prediksi":
 
             R2
             {nilai_R2}
+            
+            target
+            {y_col}
 
             Anda adalah AI Data Analyst profesional di bidang peternakan ayam petelur.
             ======================
@@ -483,8 +486,8 @@ elif menu == "Analisis Prediksi":
 
             2. Analisis tiap variabel (koefisien):
             Untuk setiap variabel:
-            - Jelaskan apakah pengaruhnya positif atau negatif target
-            - Jelaskan arti besarnya koefisien terhadap target
+            - Jelaskan apakah pengaruhnya positif atau negatif terhadap (target)
+            - Jelaskan arti besarnya koefisien terhadap (target)
             - Apakah masuk akal secara bisnis
             - Jika tidak masuk akal, jelaskan kemungkinan penyebab (misalnya korelasi, data bias, dll)
 
