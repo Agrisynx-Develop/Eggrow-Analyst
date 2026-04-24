@@ -112,15 +112,7 @@ if menu == "Dashboard":
             if dataupload:
                 df = pd.read_csv(dataupload)
                 st.dataframe(df.head())
-
-        if fileMethod == "Seaborn Dataset":
-            dataset_name = st.text_input("Enter dataset name (e.g. iris)")
-            if dataset_name:
-                try:
-                    df = sns.load_dataset(dataset_name)
-                    st.dataframe(df.head())
-                except Exception as e:
-                    st.error(str(e))      
+  
     
     
     st.header("📊 Dashboard Monitoring")
@@ -299,7 +291,7 @@ elif menu == "Analisis Prediksi":
     else:
         st.info("Belum ada data hasil analisis")
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "Data Cleaning",
+        "Data Overview",
         "Visualization",
         "Model Building",
         "Prediction",
