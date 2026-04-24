@@ -890,19 +890,13 @@ elif menu == "Kesehatan":
         st.header("📷 Eggrow Vision (Deep Learning)")
 
         uploaded_img = st.file_uploader("Upload gambar ayam", type=["jpg","png"])
-        if uploaded_img:
-            file_bytes = np.asarray(bytearray(uploaded_img.read()), dtype=np.uint8)
-            img = cv2.imdecode(file_bytes, 1)
-
-            img_resized = cv2.resize(img, (128, 128))
+        if uploaded_img is not None:
+            image = Image.open(uploaded_img)
+            img_resized = cv2.resize(image, (128, 128))
             img_norm = img_resized / 255.0
             img_input = np.expand_dims(img_norm, axis=0)
 
-            st.image(img_resized, channels="BGR")
-        else 
-            uploaded_img is not None:
-            image = Image.open(uploaded_img)
-            st.image(image, caption="Gambar input", use_container_width=True)
+            st.image(image_resize, caption="Gambar input", use_container_width=True)
         
             # load model
             interpreter, input_details, output_details, class_names = load_model_dl()
