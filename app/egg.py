@@ -908,7 +908,7 @@ elif menu == "Kesehatan":
         if uploaded_img is not None:
             image = Image.open(uploaded_img).convert("RGB")
         
-            st.image(image, caption="Gambar input", use_container_width=True)
+            st.image(image, caption="Gambar input", width=300)
         
             # LOAD MODEL
             interpreter, input_details, output_details, class_names = load_model_dl()
