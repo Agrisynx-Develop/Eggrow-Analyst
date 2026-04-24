@@ -899,7 +899,7 @@ elif menu == "Kesehatan":
             img_input = np.expand_dims(img_norm, axis=0)
 
             st.image(img_resized, channels="BGR")
-        elif uploaded_img is not None:
+        else uploaded_img is not None:
             image = Image.open(uploaded_img)
             st.image(image, caption="Gambar input", use_container_width=True)
         
