@@ -383,12 +383,18 @@ elif menu == "Analisis Prediksi":
                 ml_model = LinearRegression()
             else:
                 model = LogisticRegression()
-
+            from sklearn.preprocessing import LabelEncoder
+            le_target = LabelEncoder()
+            y = le_target.fit_transform(y)
+            
+            # Split data
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=0.2, random_state=42
             )
-
+            
+            # Train
             ml_model.fit(X_train, y_train)
+            #ml_model.fit(X_train, y_train)
             y_pred = ml_model.predict(X_test)
             
             st.success("Model trained successfully")
